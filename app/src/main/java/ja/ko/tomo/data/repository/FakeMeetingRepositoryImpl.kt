@@ -6,8 +6,9 @@ import ja.ko.tomo.domain.model.MeetingListResult
 import ja.ko.tomo.domain.model.MeetingResult
 import ja.ko.tomo.domain.repository.MeetingRepository
 import kotlinx.coroutines.delay
+import javax.inject.Inject
 
-class FakeMeetingRepositoryImpl: MeetingRepository {
+class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
 
     private var meeting: Meeting? = Meeting(
         id = 1L,

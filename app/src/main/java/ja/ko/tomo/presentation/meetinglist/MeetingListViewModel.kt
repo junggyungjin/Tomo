@@ -2,13 +2,16 @@ package ja.ko.tomo.presentation.meetinglist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ja.ko.tomo.domain.model.MeetingListResult
 import ja.ko.tomo.domain.usecase.meeting.GetMeetingsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MeetingListViewModel (
+@HiltViewModel
+class MeetingListViewModel @Inject constructor(
     private val getMeetingsUseCase: GetMeetingsUseCase
 ) : ViewModel() {
 

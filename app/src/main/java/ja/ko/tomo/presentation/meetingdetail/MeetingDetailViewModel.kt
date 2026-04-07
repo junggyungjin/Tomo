@@ -1,7 +1,9 @@
 package ja.ko.tomo.presentation.meetingdetail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ja.ko.tomo.domain.model.Meeting
 import ja.ko.tomo.domain.model.MeetingDetailResult
 import ja.ko.tomo.domain.model.MeetingResult
@@ -11,14 +13,18 @@ import ja.ko.tomo.domain.usecase.meeting.JoinMeetingUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MeetingDetailViewModel(
-    private val meetingId: Long,
+@HiltViewModel
+class MeetingDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val getMeetingDetailUseCase: GetMeetingDetailUseCase,
     private val joinMeetingUseCase: JoinMeetingUseCase,
     private val cancelJoinUseCase: CancelJoinUseCase
 ) : ViewModel() {
 
+    private val meetingId: Long =
+        checkNotNull(savedStateHandle.get<Long>("meetingId"))
     private val _uiState = MutableStateFlow<MeetingDetailUiState>(
         MeetingDetailUiState.Loading
     )
