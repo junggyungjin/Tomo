@@ -2,6 +2,7 @@ package ja.ko.tomo.presentation.meetinglist
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -85,88 +86,96 @@ fun MeetingListScreen(
             }
 
             is MeetingListUiState.Success -> {
-                LazyColumn(
+                // 전체를 Column으로 감싸 헤더와 컨텐츠 영역을 나눕니다.
+                Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                        .fillMaxSize().padding(horizontal = 16.dp, vertical = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    item {
-                        Text(
-                            text = "TOMO",
-                            color = TomoBlue,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.ExtraBold
-                            ),
-                            fontSize = 36.sp
-                        )
+                    Text(
+                        text = "TOMO",
+                        color = TomoBlue,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.ExtraBold
+                        ),
+                        fontSize = 36.sp
+                    )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                        Text(
-                            text = "한일 교류 모임 목록",
-                            color = DarkGray,
-                            style = MaterialTheme.typography.titleSmall.copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                            fontSize = 18.sp
-                        )
+                    Text(
+                        text = "한일 교류 모임 목록",
+                        color = DarkGray,
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        fontSize = 18.sp
+                    )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Button(
+                            onClick = { onFilterChange(MeetingListFilter.ALL) },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (state.selectedFilter == MeetingListFilter.ALL) TomoBlue else Color.White
+                            )
                         ) {
-                            Button(
-                                onClick = { onFilterChange(MeetingListFilter.ALL) },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (state.selectedFilter == MeetingListFilter.ALL) {
-                                        TomoBlue
-                                    } else {
-                                        Color.White
-                                    }
-                                )
-                            ) {
-                                Text(
-                                    text = "전체",
-                                    color = if (state.selectedFilter == MeetingListFilter.ALL) {
-                                        Color.White
-                                    } else {
-                                        DarkGray
-                                    }
-                                )
-                            }
+                            Text(
+                                text = "전체",
+                                color = if (state.selectedFilter == MeetingListFilter.ALL) Color.White else DarkGray
+                            )
+                        }
 
-                            Button(
-                                onClick = { onFilterChange(MeetingListFilter.JOINED)},
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (state.selectedFilter == MeetingListFilter.JOINED) {
-                                        TomoBlue
-                                    }else {
-                                        Color.White
-                                    }
-                                )
-                            ) {
-                                Text(
-                                    text = "참가한 모임",
-                                    color = if (state.selectedFilter == MeetingListFilter.JOINED) {
-                                        Color.White
-                                    }else {
-                                        DarkGray
-                                    }
+                        Button(
+                            onClick = { onFilterChange(MeetingListFilter.JOINED) },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (state.selectedFilter == MeetingListFilter.JOINED) TomoBlue else Color.White
+                            )
+                        ) {
+                            Text(
+                                text = "참가한 모임",
+                                color = if (state.selectedFilter == MeetingListFilter.JOINED) Color.White else DarkGray
+                            )
+                        }
+                    }
+
+                    if (state.meetings.isEmpty()) {
+                        Box(
+                            modifier = Modifier.weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = if (state.selectedFilter == MeetingListFilter.JOINED) {
+                                    "참가한 모임이 없습니다"
+                                } else {
+                                    "예정된 모임이 없습니다"
+                                },
+                                color = DarkGray
+                            )
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f), // 리스트도 남은 공간을 차지하도록 설정
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            items(state.meetings) { meeting ->
+                                MeetingListItem(
+                                    meeting = meeting,
+                                    onClick = onMeetingClick
                                 )
                             }
                         }
                     }
 
-                    items(state.meetings) { meeting ->
-                        MeetingListItem(
-                            meeting = meeting,
-                            onClick = onMeetingClick
-                        )
-                    }
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
             }
         }

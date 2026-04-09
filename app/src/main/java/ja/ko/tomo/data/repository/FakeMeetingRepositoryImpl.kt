@@ -54,8 +54,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             subtitle = "메쨔쿠쨔 세크수",
             dateTime = "2026.03.29 토요일 22:00",
             location = "우리집",
-            isClosed = true,
-            isJoined = false
+            isClosed = false,
+            isJoined = true
         ),
         Meeting(
             id = 5L,

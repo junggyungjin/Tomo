@@ -41,14 +41,10 @@ class MeetingListViewModel @Inject constructor(
                         MeetingListFilter.JOINED -> result.meetings.filter { it.isJoined }
                     }
 
-                    _uiState.value = if (filteredMeetings.isEmpty()) {
-                        MeetingListUiState.Empty
-                    } else {
-                        MeetingListUiState.Success(
-                            meetings = filteredMeetings,
-                            selectedFilter = currentFilter
-                        )
-                    }
+                    _uiState.value = MeetingListUiState.Success(
+                        meetings = filteredMeetings,
+                        selectedFilter = currentFilter
+                    )
                 }
 
                 MeetingListResult.Empty -> {
