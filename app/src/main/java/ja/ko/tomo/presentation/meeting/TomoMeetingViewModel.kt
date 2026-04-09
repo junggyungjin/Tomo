@@ -2,6 +2,7 @@ package ja.ko.tomo.presentation.meeting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ja.ko.tomo.domain.model.Meeting
 import ja.ko.tomo.domain.model.MeetingResult
 import ja.ko.tomo.domain.usecase.meeting.GetTodayMeetingUseCase
@@ -12,8 +13,10 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TomoMeetingViewModel(
+@HiltViewModel
+class TomoMeetingViewModel @Inject constructor(
     private val getTodayMeetingUseCase: GetTodayMeetingUseCase,
     private val joinMeetingUseCase: JoinMeetingUseCase
 ) : ViewModel() {
