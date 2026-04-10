@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetMeetingsUseCase @Inject constructor(
     private val meetingRepository: MeetingRepository
 ) {
-    suspend operator fun invoke(): MeetingListResult {
-        return meetingRepository.getMeetings()
+    suspend operator fun invoke(query: String? = null): MeetingListResult {
+        return meetingRepository.getMeetings(query = query)
     }
 }

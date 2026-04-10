@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Button
@@ -24,6 +25,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,7 +50,8 @@ import ja.ko.tomo.ui.theme.TomoTheme
 fun MeetingListScreen(
     state: MeetingListUiState,
     onMeetingClick: (Long) -> Unit,
-    onFilterChange: (MeetingListFilter) -> Unit
+    onFilterChange: (MeetingListFilter) -> Unit,
+    onSearchQueryChange: (String) -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -143,16 +146,30 @@ fun MeetingListScreen(
                         }
                     }
 
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    OutlinedTextField(
+                        value = state.searchQuery,
+                        onValueChange = { onSearchQueryChange(it) },
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                        placeholder = { Text("제목 또는 장소로 검색") },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null)},
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
                     if (state.meetings.isEmpty()) {
                         Box(
                             modifier = Modifier.weight(1f),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = if (state.selectedFilter == MeetingListFilter.JOINED) {
-                                    "참가한 모임이 없습니다"
-                                } else {
-                                    "예정된 모임이 없습니다"
+                                text = when {
+                                    state.searchQuery.isNotEmpty() -> "검색 결과가 없습니다"
+                                    state.selectedFilter == MeetingListFilter.JOINED -> "참가한 모임이 없습니다."
+                                    else -> "예정된 모임이 없습니다"
                                 },
                                 color = DarkGray
                             )
@@ -232,7 +249,7 @@ private fun MeetingListItem(
                 Icon(
                     imageVector = Icons.Outlined.CalendarToday,
                     contentDescription = "date time",
-                    tint = MediumGrey, // TODO 질문
+                    tint = MediumGrey,
                     modifier = Modifier.size(18.dp)
                 )
 
@@ -301,7 +318,8 @@ fun MeetingListLoadingPreview() {
         MeetingListScreen(
             state = MeetingListUiState.Loading,
             onMeetingClick = {},
-            onFilterChange = {}
+            onFilterChange = {},
+            onSearchQueryChange = {}
         )
     }
 }
@@ -344,7 +362,8 @@ fun MeetingListSuccessPreview() {
                 selectedFilter = MeetingListFilter.ALL
             ),
             onMeetingClick = {},
-            onFilterChange =  {}
+            onFilterChange =  {},
+            onSearchQueryChange = {}
         )
     }
 }

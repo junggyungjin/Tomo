@@ -125,13 +125,22 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
         return MeetingResult.Success(updatedMeeting)
     }
 
-    override suspend fun getMeetings(): MeetingListResult {
+    override suspend fun getMeetings(query: String?): MeetingListResult {
         delay(1000)
 
-        return if (meetings.isEmpty()) {
+        val filtered = if (query.isNullOrBlank()) {
+            meetings
+        }else {
+            meetings.filter {
+                it.title.contains(query, ignoreCase = true) ||
+                it.location.contains(query, ignoreCase = true)
+            }
+        }
+
+        return if (filtered.isEmpty()) {
             MeetingListResult.Empty
         }else {
-            MeetingListResult.Success(meetings)
+            MeetingListResult.Success(filtered)
         }
     }
 

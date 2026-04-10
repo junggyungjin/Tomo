@@ -8,6 +8,7 @@ sealed interface MeetingListUiState {
     data class Error(val message: String) : MeetingListUiState
     data class Success(
         val meetings: List<Meeting>,
-        val selectedFilter: MeetingListFilter
+        val selectedFilter: MeetingListFilter,
+        val searchQuery: String = ""
     ) : MeetingListUiState
 }

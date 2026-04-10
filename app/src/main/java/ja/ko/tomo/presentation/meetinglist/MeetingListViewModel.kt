@@ -5,8 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ja.ko.tomo.domain.model.MeetingListResult
 import ja.ko.tomo.domain.usecase.meeting.GetMeetingsUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,9 +19,11 @@ class MeetingListViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<MeetingListUiState>(
         MeetingListUiState.Loading
     )
-    val uiState : StateFlow<MeetingListUiState> = _uiState
+    val uiState = _uiState.asStateFlow()
 
     private var currentFilter: MeetingListFilter = MeetingListFilter.ALL
+    private var currentSearchQuery: String = ""
+    private var searchJob: Job? = null
 
     init {
         loadMeetings()
@@ -30,11 +33,15 @@ class MeetingListViewModel @Inject constructor(
         loadMeetings()
     }
 
-    private fun loadMeetings() {
-        _uiState.value = MeetingListUiState.Loading
+    private fun loadMeetings(isSilent: Boolean = false) {
+        if (!isSilent) {
+            _uiState.value = MeetingListUiState.Loading
+        }
 
-        viewModelScope.launch {
-            when (val result = getMeetingsUseCase()) {
+        searchJob?.cancel()
+
+        searchJob = viewModelScope.launch {
+            when (val result = getMeetingsUseCase(currentSearchQuery)) {
                 is MeetingListResult.Success -> {
                     val filteredMeetings = when (currentFilter) {
                         MeetingListFilter.ALL -> result.meetings
@@ -43,12 +50,17 @@ class MeetingListViewModel @Inject constructor(
 
                     _uiState.value = MeetingListUiState.Success(
                         meetings = filteredMeetings,
-                        selectedFilter = currentFilter
+                        selectedFilter = currentFilter,
+                        searchQuery = currentSearchQuery
                     )
                 }
 
                 MeetingListResult.Empty -> {
-                    _uiState.value = MeetingListUiState.Empty
+                    _uiState.value = MeetingListUiState.Success(
+                        meetings = emptyList(),
+                        selectedFilter = currentFilter,
+                        searchQuery = currentSearchQuery
+                    )
                 }
 
                 is MeetingListResult.Error -> {
@@ -61,5 +73,16 @@ class MeetingListViewModel @Inject constructor(
     fun updateFilter(filter: MeetingListFilter) {
         currentFilter = filter
         loadMeetings()
+    }
+
+    fun onSearchQueryChange(newQuery: String) {
+        currentSearchQuery = newQuery
+
+        val currentState = _uiState.value
+        if (currentState is MeetingListUiState.Success) {
+            _uiState.value = currentState.copy(searchQuery = newQuery)
+        }
+
+        loadMeetings(isSilent = true)
     }
 }

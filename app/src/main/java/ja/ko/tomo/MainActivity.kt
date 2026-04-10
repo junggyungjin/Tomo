@@ -52,6 +52,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onFilterChange = { filter ->
                                 listViewModel.updateFilter(filter)
+                            },
+                            onSearchQueryChange = { query ->
+                                listViewModel.onSearchQueryChange(query)
                             }
                         )
                     }

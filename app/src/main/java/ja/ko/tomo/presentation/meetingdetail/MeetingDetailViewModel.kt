@@ -11,7 +11,7 @@ import ja.ko.tomo.domain.usecase.meeting.CancelJoinUseCase
 import ja.ko.tomo.domain.usecase.meeting.GetMeetingDetailUseCase
 import ja.ko.tomo.domain.usecase.meeting.JoinMeetingUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ class MeetingDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<MeetingDetailUiState>(
         MeetingDetailUiState.Loading
     )
-    val uiState : StateFlow<MeetingDetailUiState> = _uiState
+    val uiState = _uiState.asStateFlow()
 
     init {
         loadMeetingDetail()
