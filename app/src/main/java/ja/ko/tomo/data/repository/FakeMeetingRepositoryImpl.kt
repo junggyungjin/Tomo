@@ -17,7 +17,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
         dateTime = "2026.03.22 일요일 19:00",
         location = "홍대입구 카페 하루",
         isClosed = false,
-        isJoined = false
+        isJoined = false,
+        isFavorite = false
     )
 
     private var meetings: List<Meeting> = listOf(
@@ -28,7 +29,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             dateTime = "2026.03.22 일요일 19:00",
             location = "홍대입구 카페 하루",
             isClosed = false,
-            isJoined = false
+            isJoined = false,
+            isFavorite = false
         ),
         Meeting(
             id = 2L,
@@ -37,7 +39,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             dateTime = "2026.03.23 월요일 18:30",
             location = "강남역 스터디룸",
             isClosed = false,
-            isJoined = false
+            isJoined = false,
+            isFavorite = false
         ),
         Meeting(
             id = 3L,
@@ -46,7 +49,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             dateTime = "2026.03.24 화요일 20:00",
             location = "성수동 카페",
             isClosed = false,
-            isJoined = false
+            isJoined = false,
+            isFavorite = false
         ),
         Meeting(
             id = 4L,
@@ -55,7 +59,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             dateTime = "2026.03.29 토요일 22:00",
             location = "우리집",
             isClosed = false,
-            isJoined = true
+            isJoined = false,
+            isFavorite = false
         ),
         Meeting(
             id = 5L,
@@ -64,7 +69,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             dateTime = "2026.03.28 금요일 20:00",
             location = "합정역 술집",
             isClosed = false,
-            isJoined = false
+            isJoined = false,
+            isFavorite = false
         )
     )
 
@@ -117,6 +123,21 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
         meetings = meetings.map {
             if (it.id == meetingId) updatedMeeting else it
         }
+
+        if (meeting?.id == meetingId) {
+            meeting = updatedMeeting
+        }
+
+        return MeetingResult.Success(updatedMeeting)
+    }
+
+    override suspend fun toggleFavorite(meetingId: Long): MeetingResult {
+        val targetMeeting = meetings.find { it.id == meetingId }
+            ?: return MeetingResult.Error("존재하지 않는 모임입니다")
+
+        val updatedMeeting = targetMeeting.copy(isFavorite = !targetMeeting.isFavorite)
+
+        meetings = meetings.map { if (it.id == meetingId) updatedMeeting else it}
 
         if (meeting?.id == meetingId) {
             meeting = updatedMeeting

@@ -10,6 +10,7 @@ import ja.ko.tomo.domain.model.MeetingResult
 import ja.ko.tomo.domain.usecase.meeting.CancelJoinUseCase
 import ja.ko.tomo.domain.usecase.meeting.GetMeetingDetailUseCase
 import ja.ko.tomo.domain.usecase.meeting.JoinMeetingUseCase
+import ja.ko.tomo.domain.usecase.meeting.ToggleFavoriteUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -20,7 +21,8 @@ class MeetingDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getMeetingDetailUseCase: GetMeetingDetailUseCase,
     private val joinMeetingUseCase: JoinMeetingUseCase,
-    private val cancelJoinUseCase: CancelJoinUseCase
+    private val cancelJoinUseCase: CancelJoinUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
     private val meetingId: Long =
@@ -91,5 +93,14 @@ class MeetingDetailViewModel @Inject constructor(
             buttonText = buttonText,
             isButtonEnabled = isButtonEnabled
         )
+    }
+
+    fun toggleFavorite(meetingId: Long) {
+        viewModelScope.launch {
+            val result = toggleFavoriteUseCase(meetingId = meetingId)
+            if (result is MeetingResult.Success) {
+                loadMeetingDetail()
+            }
+        }
     }
 }

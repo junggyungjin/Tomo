@@ -7,5 +7,6 @@ data class Meeting(
     val dateTime: String,
     val location: String,
     val isClosed: Boolean,
-    val isJoined: Boolean
+    val isJoined: Boolean,
+    val isFavorite: Boolean
 )

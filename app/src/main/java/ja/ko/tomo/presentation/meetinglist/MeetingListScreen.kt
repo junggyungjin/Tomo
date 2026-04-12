@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.LocationOn
@@ -24,6 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -51,7 +54,8 @@ fun MeetingListScreen(
     state: MeetingListUiState,
     onMeetingClick: (Long) -> Unit,
     onFilterChange: (MeetingListFilter) -> Unit,
-    onSearchQueryChange: (String) -> Unit
+    onSearchQueryChange: (String) -> Unit,
+    onToggleFavorite: (Long) -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -186,7 +190,8 @@ fun MeetingListScreen(
                             items(state.meetings) { meeting ->
                                 MeetingListItem(
                                     meeting = meeting,
-                                    onClick = onMeetingClick
+                                    onClick = onMeetingClick,
+                                    onToggleFavorite = onToggleFavorite
                                 )
                             }
                         }
@@ -202,7 +207,8 @@ fun MeetingListScreen(
 @Composable
 private fun MeetingListItem(
     meeting: Meeting,
-    onClick: (Long) -> Unit
+    onClick: (Long) -> Unit,
+    onToggleFavorite: (Long) -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -216,14 +222,29 @@ private fun MeetingListItem(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(
-                text = meeting.title,
-                color = Black,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.ExtraBold
-                ),
-                fontSize = 20.sp
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = meeting.title,
+                    color = Black,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.ExtraBold
+                    ),
+                    fontSize = 20.sp,
+                    modifier = Modifier.weight(1f)
+                )
+
+                // 찜 버튼
+                IconButton(onClick = { onToggleFavorite(meeting.id)}) {
+                    Icon(
+                        imageVector = if (meeting.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "찜하기",
+                        tint = if (meeting.isFavorite) Color.Red else DarkGray
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(6.dp))
 
@@ -319,7 +340,8 @@ fun MeetingListLoadingPreview() {
             state = MeetingListUiState.Loading,
             onMeetingClick = {},
             onFilterChange = {},
-            onSearchQueryChange = {}
+            onSearchQueryChange = {},
+            onToggleFavorite =  {}
         )
     }
 }
@@ -338,7 +360,8 @@ fun MeetingListSuccessPreview() {
                         dateTime = "2026.03.22 일요일 19:00",
                         location = "홍대입구 카페 하루",
                         isClosed = false,
-                        isJoined = false
+                        isJoined = false,
+                        isFavorite = false
                     ),
                     Meeting(
                         id = 2L,
@@ -347,7 +370,8 @@ fun MeetingListSuccessPreview() {
                         dateTime = "2026.03.23 월요일 18:30",
                         location = "강남역 스터디룸",
                         isClosed = false,
-                        isJoined = false
+                        isJoined = false,
+                        isFavorite = false
                     ),
                     Meeting(
                         id = 3L,
@@ -356,14 +380,16 @@ fun MeetingListSuccessPreview() {
                         dateTime = "2026.03.24 화요일 20:00",
                         location = "성수동 카페",
                         isClosed = false,
-                        isJoined = false
+                        isJoined = false,
+                        isFavorite = false
                     )
                 ),
                 selectedFilter = MeetingListFilter.ALL
             ),
             onMeetingClick = {},
             onFilterChange =  {},
-            onSearchQueryChange = {}
+            onSearchQueryChange = {},
+            onToggleFavorite = {}
         )
     }
 }

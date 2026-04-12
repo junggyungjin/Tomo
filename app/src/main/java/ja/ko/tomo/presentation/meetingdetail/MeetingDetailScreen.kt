@@ -1,6 +1,7 @@
 package ja.ko.tomo.presentation.meetingdetail
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -19,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,7 +48,8 @@ import ja.ko.tomo.ui.theme.TomoTheme
 @Composable
 fun MeetingDetailScreen(
     state: MeetingDetailUiState,
-    onActionButtonClick: () -> Unit
+    onActionButtonClick: () -> Unit,
+    onToggleFavorite: (Long) -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -74,7 +79,8 @@ fun MeetingDetailScreen(
             is MeetingDetailUiState.Success -> {
                 MeetingDetailContent(
                     successState = state,
-                    onActionButtonClick = onActionButtonClick
+                    onActionButtonClick = onActionButtonClick,
+                    onToggleFavorite = onToggleFavorite
                 )
             }
         }
@@ -84,162 +90,179 @@ fun MeetingDetailScreen(
 @Composable
 private fun MeetingDetailContent(
     successState: MeetingDetailUiState.Success,
-    onActionButtonClick: () -> Unit
+    onActionButtonClick: () -> Unit,
+    onToggleFavorite: (Long) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "TOMO",
-            color = TomoBlue,
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.ExtraBold
-            ),
-            fontSize = 36.sp
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "모임 상세",
-            color = DarkGray,
-            style = MaterialTheme.typography.titleSmall.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            fontSize = 18.sp
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Card(
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            shape = RoundedCornerShape(24.dp),
-            modifier = Modifier.fillMaxWidth()
+    Box(modifier = Modifier.fillMaxSize()) {
+        IconButton(
+            onClick = { onToggleFavorite(successState.meeting.id)},
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 24.dp, end = 12.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(20.dp)
+            Icon(
+                imageVector = if (successState.meeting.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                contentDescription = "찜하기",
+                tint = if (successState.meeting.isFavorite) Color.Red else DarkGray,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "TOMO",
+                color = TomoBlue,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.ExtraBold
+                ),
+                fontSize = 36.sp
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "모임 상세",
+                color = DarkGray,
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                fontSize = 18.sp
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Card(
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                shape = RoundedCornerShape(24.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = successState.meeting.title,
-                    color = Black,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.ExtraBold
-                    ),
-                    fontSize = 24.sp
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = successState.meeting.subtitle,
-                    color = DarkGrey,
-                    fontSize = 14.sp
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = LightGrey
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.padding(20.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.CalendarToday,
-                        contentDescription = "date time",
-                        tint = MediumGrey,
-                        modifier = Modifier.size(18.dp)
+                    Text(
+                        text = successState.meeting.title,
+                        color = Black,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.ExtraBold
+                        ),
+                        fontSize = 24.sp
                     )
 
-                    Spacer(modifier = Modifier.size(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = successState.meeting.dateTime,
-                        color = DarkerGrey,
+                        text = successState.meeting.subtitle,
+                        color = DarkGrey,
                         fontSize = 14.sp
                     )
-                }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = LightGrey
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.LocationOn,
-                        contentDescription = "location",
-                        tint = MediumGrey,
-                        modifier = Modifier.size(18.dp)
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = LightGrey
                     )
 
-                    Spacer(modifier = Modifier.size(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarToday,
+                            contentDescription = "date time",
+                            tint = MediumGrey,
+                            modifier = Modifier.size(18.dp)
+                        )
+
+                        Spacer(modifier = Modifier.size(8.dp))
+
+                        Text(
+                            text = successState.meeting.dateTime,
+                            color = DarkerGrey,
+                            fontSize = 14.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = LightGrey
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.LocationOn,
+                            contentDescription = "location",
+                            tint = MediumGrey,
+                            modifier = Modifier.size(18.dp)
+                        )
+
+                        Spacer(modifier = Modifier.size(8.dp))
+
+                        Text(
+                            text = successState.meeting.location,
+                            color = DarkerGrey,
+                            fontSize = 14.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = LightGrey
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = successState.meeting.location,
-                        color = DarkerGrey,
-                        fontSize = 14.sp
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = LightGrey
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = when {
-                        successState.meeting.isClosed -> "마감된 모임입니다"
-                        successState.meeting.isJoined -> "참가 중인 모임입니다"
-                        else -> "현재 모집 중입니다"
-                    },
-                    color = when {
-                        successState.meeting.isClosed -> DarkGray
-                        successState.meeting.isJoined -> TomoBlue
-                        else -> TomoBlue
-                    },
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Button(
-                    onClick = onActionButtonClick,
-                    enabled = successState.isButtonEnabled,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = TomoBlue
-                    )
-                ) {
-                    Text(
-                        text = successState.buttonText,
-                        fontSize = 20.sp,
+                        text = when {
+                            successState.meeting.isClosed -> "마감된 모임입니다"
+                            successState.meeting.isJoined -> "참가 중인 모임입니다"
+                            else -> "현재 모집 중입니다"
+                        },
+                        color = when {
+                            successState.meeting.isClosed -> DarkGray
+                            successState.meeting.isJoined -> TomoBlue
+                            else -> TomoBlue
+                        },
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        fontSize = 14.sp
                     )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Button(
+                        onClick = onActionButtonClick,
+                        enabled = successState.isButtonEnabled,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = TomoBlue
+                        )
+                    ) {
+                        Text(
+                            text = successState.buttonText,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }
@@ -252,7 +275,8 @@ fun MeetingDetailLoadingPreview() {
     TomoTheme{
         MeetingDetailScreen(
             state = MeetingDetailUiState.Loading,
-            onActionButtonClick = {}
+            onActionButtonClick = {},
+            onToggleFavorite = {}
         )
     }
 }
@@ -270,12 +294,14 @@ fun MeetingDetailSuccessPreview() {
                     dateTime = "2026.03.22 일요일 19:00",
                     location = "홍대입구 카페 하루",
                     isClosed = false,
-                    isJoined = false
+                    isJoined = false,
+                    isFavorite = false
                 ),
                 buttonText = "참가하기",
                 isButtonEnabled = true
             ),
-            onActionButtonClick = {}
+            onActionButtonClick = {},
+            onToggleFavorite = {}
         )
     }
 }

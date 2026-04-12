@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ja.ko.tomo.domain.model.MeetingListResult
+import ja.ko.tomo.domain.model.MeetingResult
 import ja.ko.tomo.domain.usecase.meeting.GetMeetingsUseCase
+import ja.ko.tomo.domain.usecase.meeting.ToggleFavoriteUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MeetingListViewModel @Inject constructor(
-    private val getMeetingsUseCase: GetMeetingsUseCase
+    private val getMeetingsUseCase: GetMeetingsUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MeetingListUiState>(
@@ -84,5 +87,14 @@ class MeetingListViewModel @Inject constructor(
         }
 
         loadMeetings(isSilent = true)
+    }
+
+    fun toggleFavorite(meetingId: Long) {
+        viewModelScope.launch {
+            val result = toggleFavoriteUseCase(meetingId = meetingId)
+            if (result is MeetingResult.Success) {
+                loadMeetings(isSilent = true)
+            }
+        }
     }
 }

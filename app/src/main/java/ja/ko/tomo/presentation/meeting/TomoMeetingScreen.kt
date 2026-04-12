@@ -278,7 +278,8 @@ fun TomoMeetingSuccessPreview() {
                     dateTime = "2026.03.22 일요일 19:00",
                     location = "홍대입구 카페 하루",
                     isClosed = false,
-                    isJoined = false
+                    isJoined = false,
+                    isFavorite = false
                 ),
                 buttonText = "참가하기",
                 isJoinEnabled = true

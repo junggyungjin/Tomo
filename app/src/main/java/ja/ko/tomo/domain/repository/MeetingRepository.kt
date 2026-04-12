@@ -8,6 +8,7 @@ interface MeetingRepository {
     suspend fun getTodayMeeting(): MeetingResult
     suspend fun joinMeeting(meetingId: Long): MeetingResult
     suspend fun cancelJoin(meetingId: Long): MeetingResult
+    suspend fun toggleFavorite(meetingId: Long): MeetingResult
     suspend fun getMeetings(query: String? = null): MeetingListResult
     suspend fun getMeetingDetail(meetingId: Long): MeetingDetailResult
 }

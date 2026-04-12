@@ -55,6 +55,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onSearchQueryChange = { query ->
                                 listViewModel.onSearchQueryChange(query)
+                            },
+                            onToggleFavorite = { meetingId ->
+                                listViewModel.toggleFavorite(meetingId)
                             }
                         )
                     }
@@ -72,7 +75,10 @@ class MainActivity : ComponentActivity() {
 
                         MeetingDetailScreen(
                             state = detailUiState,
-                            onActionButtonClick = detailViewModel::onActionButtonClick
+                            onActionButtonClick = detailViewModel::onActionButtonClick,
+                            onToggleFavorite = { meetingId ->
+                                detailViewModel.toggleFavorite(meetingId = meetingId)
+                            }
                         )
                     }
                 }
