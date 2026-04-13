@@ -75,6 +75,8 @@ class MainActivity : ComponentActivity() {
 
                         MeetingDetailScreen(
                             state = detailUiState,
+                            effect = detailViewModel.effect,
+                            onBackClick = { navController.popBackStack() },
                             onActionButtonClick = detailViewModel::onActionButtonClick,
                             onToggleFavorite = { meetingId ->
                                 detailViewModel.toggleFavorite(meetingId = meetingId)

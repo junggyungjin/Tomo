@@ -11,8 +11,10 @@ import ja.ko.tomo.domain.usecase.meeting.CancelJoinUseCase
 import ja.ko.tomo.domain.usecase.meeting.GetMeetingDetailUseCase
 import ja.ko.tomo.domain.usecase.meeting.JoinMeetingUseCase
 import ja.ko.tomo.domain.usecase.meeting.ToggleFavoriteUseCase
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,6 +33,9 @@ class MeetingDetailViewModel @Inject constructor(
         MeetingDetailUiState.Loading
     )
     val uiState = _uiState.asStateFlow()
+
+    private val _effect = Channel<MeetingDetailUiEffect>()
+    val effect = _effect.receiveAsFlow()
 
     init {
         loadMeetingDetail()
@@ -66,10 +71,13 @@ class MeetingDetailViewModel @Inject constructor(
             when (result) {
                 is MeetingResult.Success -> {
                     _uiState.value = result.meeting.toDetailUiState()
+                    val msg = if (result.meeting.isJoined) "참가가 완료되었습니다!" else "참가가 취소되었습니다"
+                    _effect.send(MeetingDetailUiEffect.ShowSnackbar(msg))
+                    _effect.send(MeetingDetailUiEffect.NavigateBack)
                 }
 
                 is MeetingResult.Error -> {
-                    _uiState.value = MeetingDetailUiState.Error(result.message)
+                    _effect.send(MeetingDetailUiEffect.ShowToast(result.message))
                 }
 
                 MeetingResult.Empty -> {

@@ -1,5 +1,6 @@
 package ja.ko.tomo.presentation.meetingdetail
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,12 +25,19 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,44 +52,84 @@ import ja.ko.tomo.ui.theme.LightGrey
 import ja.ko.tomo.ui.theme.MediumGrey
 import ja.ko.tomo.ui.theme.TomoBlue
 import ja.ko.tomo.ui.theme.TomoTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.launch
 
 @Composable
 fun MeetingDetailScreen(
     state: MeetingDetailUiState,
+    effect: Flow<MeetingDetailUiEffect>,
+    onBackClick: () -> Unit,
     onActionButtonClick: () -> Unit,
     onToggleFavorite: (Long) -> Unit
 ) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Gray
-    ) {
-        when (state) {
-            MeetingDetailUiState.Loading -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "Loading...")
+    val context = LocalContext.current
+    // Snackbar를 위해 필요한 상태
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(effect) {
+        effect.collect { uiEffect ->
+            when (uiEffect) {
+                is MeetingDetailUiEffect.ShowToast -> {
+                    Toast.makeText(context, uiEffect.message, Toast.LENGTH_SHORT).show()
+                }
+                MeetingDetailUiEffect.NavigateBack -> {
+                    onBackClick()
+                }
+                is MeetingDetailUiEffect.ShowSnackbar -> {
+                    // 새로운 코루틴 스코프안에서 실행하여 스낵바 시간을 제어
+                    val job = launch {
+                        snackbarHostState.showSnackbar(
+                            message = uiEffect.message,
+                            duration = SnackbarDuration.Indefinite // 일단 스낵바를 무한정 띄움
+                        )
+                    }
+                    delay(500L) // 여기서 스낵바 시간조절
+                    job.cancel() // 시간이 다 되면 스낵바 요청 작업 자체를 취소
                 }
             }
+        }
+    }
 
-            is MeetingDetailUiState.Error -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = state.message)
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { paddingValues ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            color = Gray
+        ) {
+            when (state) {
+                MeetingDetailUiState.Loading -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "Loading...")
+                    }
                 }
-            }
 
-            is MeetingDetailUiState.Success -> {
-                MeetingDetailContent(
-                    successState = state,
-                    onActionButtonClick = onActionButtonClick,
-                    onToggleFavorite = onToggleFavorite
-                )
+                is MeetingDetailUiState.Error -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = state.message)
+                    }
+                }
+
+                is MeetingDetailUiState.Success -> {
+                    MeetingDetailContent(
+                        successState = state,
+                        onActionButtonClick = onActionButtonClick,
+                        onToggleFavorite = onToggleFavorite
+                    )
+                }
             }
         }
     }
@@ -94,20 +142,6 @@ private fun MeetingDetailContent(
     onToggleFavorite: (Long) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        IconButton(
-            onClick = { onToggleFavorite(successState.meeting.id)},
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 24.dp, end = 12.dp)
-        ) {
-            Icon(
-                imageVector = if (successState.meeting.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                contentDescription = "찜하기",
-                tint = if (successState.meeting.isFavorite) Color.Red else DarkGray,
-                modifier = Modifier.size(32.dp)
-            )
-        }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -266,6 +300,20 @@ private fun MeetingDetailContent(
                 }
             }
         }
+
+        IconButton(
+            onClick = { onToggleFavorite(successState.meeting.id)},
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 24.dp, end = 12.dp)
+        ) {
+            Icon(
+                imageVector = if (successState.meeting.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                contentDescription = "찜하기",
+                tint = if (successState.meeting.isFavorite) Color.Red else DarkGray,
+                modifier = Modifier.size(32.dp)
+            )
+        }
     }
 }
 
@@ -275,6 +323,8 @@ fun MeetingDetailLoadingPreview() {
     TomoTheme{
         MeetingDetailScreen(
             state = MeetingDetailUiState.Loading,
+            effect = emptyFlow(),
+            onBackClick = {},
             onActionButtonClick = {},
             onToggleFavorite = {}
         )
@@ -300,6 +350,8 @@ fun MeetingDetailSuccessPreview() {
                 buttonText = "참가하기",
                 isButtonEnabled = true
             ),
+            effect = emptyFlow(),
+            onBackClick = {},
             onActionButtonClick = {},
             onToggleFavorite = {}
         )
