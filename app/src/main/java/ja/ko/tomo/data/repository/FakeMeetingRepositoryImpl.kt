@@ -18,7 +18,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
         location = "홍대입구 카페 하루",
         isClosed = false,
         isJoined = false,
-        isFavorite = false
+        isFavorite = false,
+        capacity = 4
     )
 
     private var meetings: List<Meeting> = listOf(
@@ -30,7 +31,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             location = "홍대입구 카페 하루",
             isClosed = false,
             isJoined = false,
-            isFavorite = false
+            isFavorite = false,
+            capacity = 4
         ),
         Meeting(
             id = 2L,
@@ -40,7 +42,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             location = "강남역 스터디룸",
             isClosed = false,
             isJoined = false,
-            isFavorite = false
+            isFavorite = false,
+            capacity = 4
         ),
         Meeting(
             id = 3L,
@@ -50,7 +53,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             location = "성수동 카페",
             isClosed = false,
             isJoined = false,
-            isFavorite = false
+            isFavorite = false,
+            capacity = 4
         ),
         Meeting(
             id = 4L,
@@ -60,7 +64,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             location = "우리집",
             isClosed = false,
             isJoined = false,
-            isFavorite = false
+            isFavorite = false,
+            capacity = 2
         ),
         Meeting(
             id = 5L,
@@ -70,7 +75,8 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
             location = "합정역 술집",
             isClosed = false,
             isJoined = false,
-            isFavorite = false
+            isFavorite = false,
+            capacity = 8
         )
     )
 
@@ -144,6 +150,31 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
         }
 
         return MeetingResult.Success(updatedMeeting)
+    }
+
+    override suspend fun createMeeting(
+        title: String,
+        subtitle: String,
+        dateTime: String,
+        location: String,
+        capacity: Int
+    ): MeetingResult {
+        delay(1000)
+
+        val newMeeting = Meeting(
+            id = (meetings.size + 1).toLong(),
+            title = title,
+            subtitle = subtitle,
+            dateTime = dateTime,
+            location = location,
+            isClosed = false,
+            isJoined = false,
+            isFavorite = false,
+            capacity = capacity
+        )
+
+        meetings = meetings + newMeeting
+        return MeetingResult.Success(newMeeting)
     }
 
     override suspend fun getMeetings(query: String?): MeetingListResult {

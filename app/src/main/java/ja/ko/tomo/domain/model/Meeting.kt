@@ -8,5 +8,6 @@ data class Meeting(
     val location: String,
     val isClosed: Boolean,
     val isJoined: Boolean,
-    val isFavorite: Boolean
+    val isFavorite: Boolean,
+    val capacity: Int // 정원 정보
 )

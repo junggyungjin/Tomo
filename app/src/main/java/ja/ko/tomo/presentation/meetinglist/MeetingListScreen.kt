@@ -361,7 +361,8 @@ fun MeetingListSuccessPreview() {
                         location = "홍대입구 카페 하루",
                         isClosed = false,
                         isJoined = false,
-                        isFavorite = false
+                        isFavorite = false,
+                        capacity = 4
                     ),
                     Meeting(
                         id = 2L,
@@ -371,7 +372,8 @@ fun MeetingListSuccessPreview() {
                         location = "강남역 스터디룸",
                         isClosed = false,
                         isJoined = false,
-                        isFavorite = false
+                        isFavorite = false,
+                        capacity = 4
                     ),
                     Meeting(
                         id = 3L,
@@ -381,7 +383,8 @@ fun MeetingListSuccessPreview() {
                         location = "성수동 카페",
                         isClosed = false,
                         isJoined = false,
-                        isFavorite = false
+                        isFavorite = false,
+                        capacity = 4
                     )
                 ),
                 selectedFilter = MeetingListFilter.ALL
