@@ -15,6 +15,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
+import ja.ko.tomo.presentation.meetingcreate.MeetingCreateScreen
+import ja.ko.tomo.presentation.meetingcreate.MeetingCreateViewModel
 import ja.ko.tomo.presentation.meetingdetail.MeetingDetailScreen
 import ja.ko.tomo.presentation.meetingdetail.MeetingDetailViewModel
 import ja.ko.tomo.presentation.meetinglist.MeetingListScreen
@@ -58,6 +60,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onToggleFavorite = { meetingId ->
                                 listViewModel.toggleFavorite(meetingId)
+                            },
+                            onNavigateToCreate = {
+                                navController.navigate(TomoNavRoutes.MeetingCreate)
                             }
                         )
                     }
@@ -81,6 +86,25 @@ class MainActivity : ComponentActivity() {
                             onToggleFavorite = { meetingId ->
                                 detailViewModel.toggleFavorite(meetingId = meetingId)
                             }
+                        )
+                    }
+
+                    composable(
+                        TomoNavRoutes.MeetingCreate
+                    ) {
+                        val createViewModel: MeetingCreateViewModel = hiltViewModel()
+                        val createUiState by createViewModel.uiState.collectAsStateWithLifecycle()
+
+                        MeetingCreateScreen(
+                            state = createUiState,
+                            effect = createViewModel.effect,
+                            onTitleChange = createViewModel::onTitleChanged,
+                            onSubtitleChange = createViewModel::onSubtitleChanged,
+                            onDateTimeChange = createViewModel::onDateTimeChanged,
+                            onLocationChange = createViewModel::onLocationChanged,
+                            onCapacityChange = createViewModel::onCapacityChanged,
+                            onSaveClick = createViewModel::saveMeeting,
+                            onBackClick = { navController.popBackStack() }
                         )
                     }
                 }

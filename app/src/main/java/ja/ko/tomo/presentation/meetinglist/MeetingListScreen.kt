@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
@@ -24,11 +26,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,153 +59,316 @@ fun MeetingListScreen(
     onMeetingClick: (Long) -> Unit,
     onFilterChange: (MeetingListFilter) -> Unit,
     onSearchQueryChange: (String) -> Unit,
-    onToggleFavorite: (Long) -> Unit
+    onToggleFavorite: (Long) -> Unit,
+    onNavigateToCreate: () -> Unit
 ) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Gray
-    ) {
-        when (state) {
-            MeetingListUiState.Loading -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "Loading..")
-                }
+    Scaffold(
+        floatingActionButton = {
+            // 모임 생성 버튼
+            FloatingActionButton(
+                onClick = onNavigateToCreate,
+                containerColor = TomoBlue,
+                contentColor = Color.White,
+                shape = CircleShape
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "모임 생성")
             }
-
-            MeetingListUiState.Empty -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "예정된 모임이 없습니다")
-                }
-            }
-
-            is MeetingListUiState.Error -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = state.message)
-                }
-            }
-
-            is MeetingListUiState.Success -> {
-                // 전체를 Column으로 감싸 헤더와 컨텐츠 영역을 나눕니다.
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize().padding(horizontal = 16.dp, vertical = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "TOMO",
-                        color = TomoBlue,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.ExtraBold
-                        ),
-                        fontSize = 36.sp
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "한일 교류 모임 목록",
-                        color = DarkGray,
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        fontSize = 18.sp
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        }
+    ) { paddingValues ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues), // Scaffold의 패딩 적용
+            color = Gray
+        ) {
+            when (state) {
+                MeetingListUiState.Loading -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Button(
-                            onClick = { onFilterChange(MeetingListFilter.ALL) },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (state.selectedFilter == MeetingListFilter.ALL) TomoBlue else Color.White
-                            )
-                        ) {
-                            Text(
-                                text = "전체",
-                                color = if (state.selectedFilter == MeetingListFilter.ALL) Color.White else DarkGray
-                            )
-                        }
-
-                        Button(
-                            onClick = { onFilterChange(MeetingListFilter.JOINED) },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = if (state.selectedFilter == MeetingListFilter.JOINED) TomoBlue else Color.White
-                            )
-                        ) {
-                            Text(
-                                text = "참가한 모임",
-                                color = if (state.selectedFilter == MeetingListFilter.JOINED) Color.White else DarkGray
-                            )
-                        }
+                        Text(text = "Loading..")
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                MeetingListUiState.Empty -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "예정된 모임이 없습니다")
+                    }
+                }
 
-                    OutlinedTextField(
-                        value = state.searchQuery,
-                        onValueChange = { onSearchQueryChange(it) },
-                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                        placeholder = { Text("제목 또는 장소로 검색") },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null)},
-                        singleLine = true,
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                is MeetingListUiState.Error -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = state.message)
+                    }
+                }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                is MeetingListUiState.Success -> {
+                    // 전체를 Column으로 감싸 헤더와 컨텐츠 영역을 나눕니다.
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize().padding(horizontal = 16.dp, vertical = 20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "TOMO",
+                            color = TomoBlue,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.ExtraBold
+                            ),
+                            fontSize = 36.sp
+                        )
 
-                    if (state.meetings.isEmpty()) {
-                        Box(
-                            modifier = Modifier.weight(1f),
-                            contentAlignment = Alignment.Center
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = "한일 교류 모임 목록",
+                            color = DarkGray,
+                            style = MaterialTheme.typography.titleSmall.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            fontSize = 18.sp
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(
-                                text = when {
-                                    state.searchQuery.isNotEmpty() -> "검색 결과가 없습니다"
-                                    state.selectedFilter == MeetingListFilter.JOINED -> "참가한 모임이 없습니다."
-                                    else -> "예정된 모임이 없습니다"
-                                },
-                                color = DarkGray
-                            )
-                        }
-                    } else {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f), // 리스트도 남은 공간을 차지하도록 설정
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            items(state.meetings) { meeting ->
-                                MeetingListItem(
-                                    meeting = meeting,
-                                    onClick = onMeetingClick,
-                                    onToggleFavorite = onToggleFavorite
+                            Button(
+                                onClick = { onFilterChange(MeetingListFilter.ALL) },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (state.selectedFilter == MeetingListFilter.ALL) TomoBlue else Color.White
+                                )
+                            ) {
+                                Text(
+                                    text = "전체",
+                                    color = if (state.selectedFilter == MeetingListFilter.ALL) Color.White else DarkGray
+                                )
+                            }
+
+                            Button(
+                                onClick = { onFilterChange(MeetingListFilter.JOINED) },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (state.selectedFilter == MeetingListFilter.JOINED) TomoBlue else Color.White
+                                )
+                            ) {
+                                Text(
+                                    text = "참가한 모임",
+                                    color = if (state.selectedFilter == MeetingListFilter.JOINED) Color.White else DarkGray
                                 )
                             }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = state.searchQuery,
+                            onValueChange = { onSearchQueryChange(it) },
+                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                            placeholder = { Text("제목 또는 장소로 검색") },
+                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null)},
+                            singleLine = true,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        if (state.meetings.isEmpty()) {
+                            Box(
+                                modifier = Modifier.weight(1f),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = when {
+                                        state.searchQuery.isNotEmpty() -> "검색 결과가 없습니다"
+                                        state.selectedFilter == MeetingListFilter.JOINED -> "참가한 모임이 없습니다."
+                                        else -> "예정된 모임이 없습니다"
+                                    },
+                                    color = DarkGray
+                                )
+                            }
+                        } else {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f), // 리스트도 남은 공간을 차지하도록 설정
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                items(state.meetings) { meeting ->
+                                    MeetingListItem(
+                                        meeting = meeting,
+                                        onClick = onMeetingClick,
+                                        onToggleFavorite = onToggleFavorite
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
                 }
             }
         }
     }
+
+//    Surface(
+//        modifier = Modifier.fillMaxSize(),
+//        color = Gray
+//    ) {
+//        when (state) {
+//            MeetingListUiState.Loading -> {
+//                Column(
+//                    modifier = Modifier.fillMaxSize(),
+//                    verticalArrangement = Arrangement.Center,
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    Text(text = "Loading..")
+//                }
+//            }
+//
+//            MeetingListUiState.Empty -> {
+//                Column(
+//                    modifier = Modifier.fillMaxSize(),
+//                    verticalArrangement = Arrangement.Center,
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    Text(text = "예정된 모임이 없습니다")
+//                }
+//            }
+//
+//            is MeetingListUiState.Error -> {
+//                Column(
+//                    modifier = Modifier.fillMaxSize(),
+//                    verticalArrangement = Arrangement.Center,
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    Text(text = state.message)
+//                }
+//            }
+//
+//            is MeetingListUiState.Success -> {
+//                // 전체를 Column으로 감싸 헤더와 컨텐츠 영역을 나눕니다.
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxSize().padding(horizontal = 16.dp, vertical = 20.dp),
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    Text(
+//                        text = "TOMO",
+//                        color = TomoBlue,
+//                        style = MaterialTheme.typography.titleMedium.copy(
+//                            fontWeight = FontWeight.ExtraBold
+//                        ),
+//                        fontSize = 36.sp
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(8.dp))
+//
+//                    Text(
+//                        text = "한일 교류 모임 목록",
+//                        color = DarkGray,
+//                        style = MaterialTheme.typography.titleSmall.copy(
+//                            fontWeight = FontWeight.Bold
+//                        ),
+//                        fontSize = 18.sp
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(12.dp))
+//
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+//                    ) {
+//                        Button(
+//                            onClick = { onFilterChange(MeetingListFilter.ALL) },
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = if (state.selectedFilter == MeetingListFilter.ALL) TomoBlue else Color.White
+//                            )
+//                        ) {
+//                            Text(
+//                                text = "전체",
+//                                color = if (state.selectedFilter == MeetingListFilter.ALL) Color.White else DarkGray
+//                            )
+//                        }
+//
+//                        Button(
+//                            onClick = { onFilterChange(MeetingListFilter.JOINED) },
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = if (state.selectedFilter == MeetingListFilter.JOINED) TomoBlue else Color.White
+//                            )
+//                        ) {
+//                            Text(
+//                                text = "참가한 모임",
+//                                color = if (state.selectedFilter == MeetingListFilter.JOINED) Color.White else DarkGray
+//                            )
+//                        }
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(12.dp))
+//
+//                    OutlinedTextField(
+//                        value = state.searchQuery,
+//                        onValueChange = { onSearchQueryChange(it) },
+//                        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+//                        placeholder = { Text("제목 또는 장소로 검색") },
+//                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null)},
+//                        singleLine = true,
+//                        shape = RoundedCornerShape(12.dp)
+//                    )
+//
+//                    Spacer(modifier = Modifier.height(12.dp))
+//
+//                    if (state.meetings.isEmpty()) {
+//                        Box(
+//                            modifier = Modifier.weight(1f),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            Text(
+//                                text = when {
+//                                    state.searchQuery.isNotEmpty() -> "검색 결과가 없습니다"
+//                                    state.selectedFilter == MeetingListFilter.JOINED -> "참가한 모임이 없습니다."
+//                                    else -> "예정된 모임이 없습니다"
+//                                },
+//                                color = DarkGray
+//                            )
+//                        }
+//                    } else {
+//                        Spacer(modifier = Modifier.height(16.dp))
+//                        LazyColumn(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .weight(1f), // 리스트도 남은 공간을 차지하도록 설정
+//                            verticalArrangement = Arrangement.spacedBy(16.dp),
+//                            horizontalAlignment = Alignment.CenterHorizontally
+//                        ) {
+//                            items(state.meetings) { meeting ->
+//                                MeetingListItem(
+//                                    meeting = meeting,
+//                                    onClick = onMeetingClick,
+//                                    onToggleFavorite = onToggleFavorite
+//                                )
+//                            }
+//                        }
+//                    }
+//
+//                    Spacer(modifier = Modifier.height(20.dp))
+//                }
+//            }
+//        }
+//    }
 }
 
 @Composable
@@ -341,7 +508,8 @@ fun MeetingListLoadingPreview() {
             onMeetingClick = {},
             onFilterChange = {},
             onSearchQueryChange = {},
-            onToggleFavorite =  {}
+            onToggleFavorite =  {},
+            onNavigateToCreate = {}
         )
     }
 }
@@ -392,7 +560,8 @@ fun MeetingListSuccessPreview() {
             onMeetingClick = {},
             onFilterChange =  {},
             onSearchQueryChange = {},
-            onToggleFavorite = {}
+            onToggleFavorite = {},
+            onNavigateToCreate = {}
         )
     }
 }

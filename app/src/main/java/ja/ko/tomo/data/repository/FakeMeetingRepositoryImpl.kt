@@ -192,7 +192,7 @@ class FakeMeetingRepositoryImpl @Inject constructor(): MeetingRepository {
         return if (filtered.isEmpty()) {
             MeetingListResult.Empty
         }else {
-            MeetingListResult.Success(filtered)
+            MeetingListResult.Success(filtered.reversed())
         }
     }
 
