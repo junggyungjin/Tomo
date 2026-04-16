@@ -15,14 +15,15 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import ja.ko.tomo.presentation.meetingcreate.MeetingCreateScreen
-import ja.ko.tomo.presentation.meetingcreate.MeetingCreateViewModel
-import ja.ko.tomo.presentation.meetingdetail.MeetingDetailScreen
-import ja.ko.tomo.presentation.meetingdetail.MeetingDetailViewModel
-import ja.ko.tomo.presentation.meetinglist.MeetingListScreen
-import ja.ko.tomo.presentation.meetinglist.MeetingListViewModel
-import ja.ko.tomo.presentation.navigation.TomoNavRoutes
-import ja.ko.tomo.ui.theme.TomoTheme
+import ja.ko.tomo.core.ui.theme.TomoTheme
+import ja.ko.tomo.feature.meeting.meetingcreate.MeetingCreateScreen
+import ja.ko.tomo.feature.meeting.meetingcreate.MeetingCreateViewModel
+import ja.ko.tomo.feature.meeting.meetingdetail.MeetingDetailScreen
+import ja.ko.tomo.feature.meeting.meetingdetail.MeetingDetailViewModel
+import ja.ko.tomo.feature.meeting.meetinglist.MeetingListScreen
+import ja.ko.tomo.feature.meeting.meetinglist.MeetingListViewModel
+import ja.ko.tomo.feature.meeting.navigation.TomoNavRoutes
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

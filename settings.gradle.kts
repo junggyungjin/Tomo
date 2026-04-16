@@ -21,4 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Tomo"
 include(":app")
- 
+include(":domain")
+include(":data")
+include(":feature:meeting")
+include(":core:ui")
