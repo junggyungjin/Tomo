@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":feature:meeting"))
     implementation(project(":core:ui"))
+    implementation(project(":core:navigation"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

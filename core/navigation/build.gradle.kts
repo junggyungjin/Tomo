@@ -1,11 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
-    namespace = "ja.ko.tomo.data"
+    namespace = "ja.ko.tomo.core.navigation"
     compileSdk = 36
 
     defaultConfig {
@@ -34,8 +33,4 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain"))
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-    implementation(libs.kotlinx.coroutines.android)
 }

@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.meeting.navigation
+package ja.ko.tomo.core.navigation
 
 object TomoNavRoutes {
     const val MeetingList = "meeting_list"
