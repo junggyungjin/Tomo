@@ -28,7 +28,7 @@ class MeetingCreateViewModel @Inject constructor(
     fun saveMeeting() {
         val currentState = _uiState.value as? MeetingCreateUiState.Success ?: return
 
-        _uiState.value = MeetingCreateUiState.Loading
+        _uiState.value = currentState.copy(isSubmitting = true)
 
         viewModelScope.launch {
             val result = createMeetingUseCase(
@@ -48,7 +48,7 @@ class MeetingCreateViewModel @Inject constructor(
                 }
                 is MeetingResult.Error -> {
                     _effect.send(MeetingCreateUiEffect.ShowSnackbar(result.message))
-                    _uiState.value = currentState // 이전 상태로 복구
+                    _uiState.value = currentState.copy(isSubmitting = false) // 이전 상태로 복구
                 }
                 else -> {}
             }
@@ -78,7 +78,6 @@ class MeetingCreateViewModel @Inject constructor(
         }
     }
 
-    // TODO 질문 1 update: (MeetingCreateUiState.Success) -> MeetingCreateUiState.Success는 무슨 의미야
     private fun updateSuccessState(update: (MeetingCreateUiState.Success) -> MeetingCreateUiState.Success) {
         val currentState = _uiState.value as? MeetingCreateUiState.Success ?: return
         val updated = update(currentState)

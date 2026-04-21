@@ -1,16 +1,18 @@
 package ja.ko.tomo.feature.meeting.meetingcreate
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -22,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,7 +58,7 @@ fun MeetingCreateScreen(
                             duration = SnackbarDuration.Indefinite
                         )
                     }
-                    delay(500)
+                    delay(1500)
                     job.cancel()
                 }
                 MeetingCreateUiEffect.NavigateBack -> {
@@ -72,84 +75,97 @@ fun MeetingCreateScreen(
     ) { padding ->
         when(state) {
             is MeetingCreateUiState.Success -> {
-                Column(
-                    modifier = Modifier
-                        .padding(padding)
-                        .verticalScroll(rememberScrollState()) // TODO 질문 이게 무슨 코드야?
-                ) {
-                    OutlinedTextField(
-                        value = state.title,
-                        onValueChange = onTitleChange,
-                        label = { Text("제목") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = state.subtitle,
-                        onValueChange = onSubtitleChange,
-                        label = { Text("부제목") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = state.dateTime,
-                        onValueChange = onDateTimeChange,
-                        label = { Text("시간") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = state.location,
-                        onValueChange = onLocationChange,
-                        label = { Text("장소") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = state.capacity,
-                        onValueChange = onCapacityChange,
-                        label = { Text("정원") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Button(
-                        onClick = onSaveClick,
-                        enabled = state.isSaveEnabled,
-                        modifier = Modifier.fillMaxWidth()
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier
+                            .padding(padding)
+                            .verticalScroll(rememberScrollState())
                     ) {
-                        Text("모임 만들기")
+                        OutlinedTextField(
+                            value = state.title,
+                            onValueChange = onTitleChange,
+                            label = { Text("제목") },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !state.isSubmitting
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = state.subtitle,
+                            onValueChange = onSubtitleChange,
+                            label = { Text("부제목") },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !state.isSubmitting
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = state.dateTime,
+                            onValueChange = onDateTimeChange,
+                            label = { Text("시간") },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !state.isSubmitting
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = state.location,
+                            onValueChange = onLocationChange,
+                            label = { Text("장소") },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !state.isSubmitting
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = state.capacity,
+                            onValueChange = onCapacityChange,
+                            label = { Text("정원") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !state.isSubmitting
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Button(
+                            onClick = onSaveClick,
+                            enabled = state.isSaveEnabled && !state.isSubmitting,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            if (state.isSubmitting) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = Color.White,
+                                    strokeWidth = 2.dp
+                                )
+                            }else {
+                                Text("모임 만들기")
+                            }
+                        }
                     }
                 }
             }
 
             MeetingCreateUiState.Loading -> {
-                Column(
+                Box(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text("Loading...")
+                    CircularProgressIndicator()
                 }
             }
 
             is MeetingCreateUiState.Error -> {
-                Column(
+                Box(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(state.message)
+                    Text(state.message, color = Color.Red)
                 }
             }
         }
