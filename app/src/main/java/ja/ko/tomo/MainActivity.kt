@@ -23,7 +23,8 @@ import ja.ko.tomo.feature.meeting.meetingdetail.MeetingDetailScreen
 import ja.ko.tomo.feature.meeting.meetingdetail.MeetingDetailViewModel
 import ja.ko.tomo.feature.meeting.meetinglist.MeetingListScreen
 import ja.ko.tomo.feature.meeting.meetinglist.MeetingListViewModel
-
+import ja.ko.tomo.feature.mypage.MyPageScreen
+import ja.ko.tomo.feature.mypage.MyPageViewModel
 
 
 @AndroidEntryPoint
@@ -36,13 +37,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             TomoTheme {
                 val navController = rememberNavController()
-                val listUiState by listViewModel.uiState.collectAsStateWithLifecycle()
 
                 NavHost(
                     navController = navController,
-                    startDestination = TomoNavRoutes.MeetingList
+                    startDestination = TomoNavRoutes.MyPage
                 ) {
                     composable(TomoNavRoutes.MeetingList) {
+                        val listUiState by listViewModel.uiState.collectAsStateWithLifecycle()
+
                         LaunchedEffect(Unit) {
                             listViewModel.reloadMeetings()
                         }
@@ -108,6 +110,15 @@ class MainActivity : ComponentActivity() {
                             onSaveClick = createViewModel::saveMeeting,
                             onBackClick = { navController.popBackStack() }
                         )
+                    }
+
+                    composable(
+                        TomoNavRoutes.MyPage
+                    ) {
+                        val myPageViewModel: MyPageViewModel = hiltViewModel()
+                        val myPageUiState by myPageViewModel.uiState.collectAsStateWithLifecycle()
+
+                        MyPageScreen(state = myPageUiState)
                     }
                 }
             }
