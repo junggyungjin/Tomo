@@ -5,6 +5,7 @@ object TomoNavRoutes {
     const val MeetingDetail = "meeting_detail"
     const val MeetingCreate = "meeting_create"
     const val MyPage = "my_page"
+    const val ChatList = "chat_list"
 
     fun meetingDetailRoute(meetingId: Long): String {
         return "$MeetingDetail/$meetingId"

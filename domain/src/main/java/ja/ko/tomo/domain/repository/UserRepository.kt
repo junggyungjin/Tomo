@@ -1,7 +1,7 @@
 package ja.ko.tomo.domain.repository
 
-import ja.ko.tomo.domain.model.User
+import ja.ko.tomo.domain.model.UserResult
 
 interface UserRepository {
-    suspend fun getMyInfo(): User?
+    suspend fun getMyInfo(): UserResult
 }

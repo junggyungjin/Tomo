@@ -17,6 +17,8 @@ import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import ja.ko.tomo.core.navigation.TomoNavRoutes
 import ja.ko.tomo.core.ui.theme.TomoTheme
+import ja.ko.tomo.feature.chat.ChatListScreen
+import ja.ko.tomo.feature.chat.ChatListViewModel
 import ja.ko.tomo.feature.meeting.meetingcreate.MeetingCreateScreen
 import ja.ko.tomo.feature.meeting.meetingcreate.MeetingCreateViewModel
 import ja.ko.tomo.feature.meeting.meetingdetail.MeetingDetailScreen
@@ -40,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = TomoNavRoutes.MyPage
+                    startDestination = TomoNavRoutes.ChatList
                 ) {
                     composable(TomoNavRoutes.MeetingList) {
                         val listUiState by listViewModel.uiState.collectAsStateWithLifecycle()
@@ -119,6 +121,18 @@ class MainActivity : ComponentActivity() {
                         val myPageUiState by myPageViewModel.uiState.collectAsStateWithLifecycle()
 
                         MyPageScreen(state = myPageUiState)
+                    }
+
+                    composable(TomoNavRoutes.ChatList) {
+                        val chatViewModel: ChatListViewModel = hiltViewModel()
+                        val chatListUiState by chatViewModel.uiState.collectAsStateWithLifecycle()
+
+                        ChatListScreen(
+                            state = chatListUiState,
+                            onChatRoomClick = { chatId ->
+                                //TODO 클릭 시 이벤트
+                            }
+                        )
                     }
                 }
             }
