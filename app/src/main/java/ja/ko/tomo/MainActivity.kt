@@ -19,6 +19,8 @@ import ja.ko.tomo.core.navigation.TomoNavRoutes
 import ja.ko.tomo.core.ui.theme.TomoTheme
 import ja.ko.tomo.feature.chat.ChatListScreen
 import ja.ko.tomo.feature.chat.ChatListViewModel
+import ja.ko.tomo.feature.chatroom.ChatRoomScreen
+import ja.ko.tomo.feature.chatroom.ChatRoomViewModel
 import ja.ko.tomo.feature.meeting.meetingcreate.MeetingCreateScreen
 import ja.ko.tomo.feature.meeting.meetingcreate.MeetingCreateViewModel
 import ja.ko.tomo.feature.meeting.meetingdetail.MeetingDetailScreen
@@ -130,8 +132,25 @@ class MainActivity : ComponentActivity() {
                         ChatListScreen(
                             state = chatListUiState,
                             onChatRoomClick = { chatId ->
-                                //TODO 클릭 시 이벤트
+                                navController.navigate(
+                                    TomoNavRoutes.chatRoomRoute(chatId)
+                                )
                             }
+                        )
+                    }
+
+                    composable(
+                        route = "${TomoNavRoutes.ChatRoom}/{chatId}", // TODO 질문 route의 형식이 다른 TomoNavRoutes.ChatList이나 TomoNavRoutes.MyPage과 다른이유
+                        arguments = listOf(navArgument("chatId") { type = NavType.LongType })
+                    ) {
+                        val chatRoomViewModel: ChatRoomViewModel = hiltViewModel()
+                        val uiState by chatRoomViewModel.uiState.collectAsStateWithLifecycle()
+
+                        ChatRoomScreen(
+                            state = uiState,
+                            onMessageChange = chatRoomViewModel::onMessageChange,
+                            onSendClick = chatRoomViewModel::sendMessage,
+                            onBackClick = { navController.popBackStack() }
                         )
                     }
                 }
