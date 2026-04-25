@@ -8,20 +8,14 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -33,7 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import ja.ko.tomo.core.navigation.TomoNavRoutes
-import ja.ko.tomo.core.ui.theme.Gray
+import ja.ko.tomo.core.navigation.bottomNavItem
 import ja.ko.tomo.core.ui.theme.TomoTheme
 import ja.ko.tomo.feature.chat.ChatListScreen
 import ja.ko.tomo.feature.chat.ChatListViewModel
@@ -47,19 +41,6 @@ import ja.ko.tomo.feature.meeting.meetinglist.MeetingListScreen
 import ja.ko.tomo.feature.meeting.meetinglist.MeetingListViewModel
 import ja.ko.tomo.feature.mypage.MyPageScreen
 import ja.ko.tomo.feature.mypage.MyPageViewModel
-
-
-data class BottomNavItem(
-    val name: String,
-    val route: String,
-    val icon: ImageVector
-)
-
-val bottomNavItem = listOf(
-    BottomNavItem("모임", TomoNavRoutes.MeetingList, Icons.Default.Groups),
-    BottomNavItem("채팅", TomoNavRoutes.ChatList, Icons.Default.ChatBubble),
-    BottomNavItem("내 정보", TomoNavRoutes.MyPage, Icons.Default.Person)
-)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
