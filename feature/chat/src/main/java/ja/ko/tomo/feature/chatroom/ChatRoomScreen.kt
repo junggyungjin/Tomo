@@ -75,13 +75,19 @@ fun ChatRoomScreen(
         ) {
             when (state) {
                 is ChatRoomUiState.Success -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(state.messages) { message ->
-                            ChatBubble(message = message)
+                    if (state.messages.isEmpty()) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(text = "아직 대화 내용이 없습니다.", color = DarkGray)
+                        }
+                    }else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(state.messages) { message ->
+                                ChatBubble(message = message)
+                            }
                         }
                     }
                 }
@@ -176,7 +182,7 @@ fun ChatInputBar(
             )
             IconButton(
                 onClick = onSendClick,
-                enabled = !isSending && text.isNotEmpty()
+                enabled = !isSending && text.isNotBlank()
             ) {
                 Icon(Icons.Default.Send, contentDescription = "전송", tint = TomoBlue)
             }

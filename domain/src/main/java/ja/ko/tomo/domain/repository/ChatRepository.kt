@@ -13,4 +13,7 @@ interface ChatRepository {
     fun getMessages(roomId: Long): Flow<ChatMessageListResult>
 
     suspend fun sendMessage(roomId: Long, text: String): ChatMessageResult
+
+    // 안 읽은 메시지를 처리하기 위한 함수
+    suspend fun markAsRead(roomId: Long)
 }

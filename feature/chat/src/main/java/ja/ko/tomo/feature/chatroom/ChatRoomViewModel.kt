@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import ja.ko.tomo.domain.model.ChatMessageListResult
 import ja.ko.tomo.domain.model.ChatMessageResult
 import ja.ko.tomo.domain.usecase.chat.GetMessagesUseCase
+import ja.ko.tomo.domain.usecase.chat.MarkAsReadUseCase
 import ja.ko.tomo.domain.usecase.chat.SendMessageUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class ChatRoomViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getMessagesUseCase: GetMessagesUseCase,
-    private val sendMessageUseCase: SendMessageUseCase
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val markAsReadUseCase: MarkAsReadUseCase
 ) : ViewModel() {
 
     private val chatId: Long = checkNotNull(savedStateHandle.get<Long>("chatId"))
@@ -28,6 +30,7 @@ class ChatRoomViewModel @Inject constructor(
 
     init {
         observeMessages()
+        markAsRead()
     }
 
     private fun observeMessages() {
@@ -35,10 +38,16 @@ class ChatRoomViewModel @Inject constructor(
             getMessagesUseCase(chatId).collect { result ->
                 _uiState.value = when (result) {
                     is ChatMessageListResult.Success -> ChatRoomUiState.Success(messages = result.messages)
-                    ChatMessageListResult.Empty -> ChatRoomUiState.Empty
+                    ChatMessageListResult.Empty -> ChatRoomUiState.Success(messages = emptyList())
                     is ChatMessageListResult.Error -> ChatRoomUiState.Error(result.message)
                 }
             }
+        }
+    }
+
+    private fun markAsRead() {
+        viewModelScope.launch {
+            markAsReadUseCase(chatId)
         }
     }
 
