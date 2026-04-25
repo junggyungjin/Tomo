@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -63,6 +64,7 @@ fun MeetingListScreen(
     onNavigateToCreate: () -> Unit
 ) {
     Scaffold(
+        containerColor = Gray,
         floatingActionButton = {
             // 모임 생성 버튼
             FloatingActionButton(
@@ -75,11 +77,10 @@ fun MeetingListScreen(
             }
         }
     ) { paddingValues ->
-        Surface(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues), // Scaffold의 패딩 적용
-            color = Gray
+                .padding(paddingValues)
         ) {
             when (state) {
                 MeetingListUiState.Loading -> {
@@ -116,7 +117,8 @@ fun MeetingListScreen(
                     // 전체를 Column으로 감싸 헤더와 컨텐츠 영역을 나눕니다.
                     Column(
                         modifier = Modifier
-                            .fillMaxSize().padding(horizontal = 16.dp, vertical = 20.dp),
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -125,10 +127,8 @@ fun MeetingListScreen(
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.ExtraBold
                             ),
-                            fontSize = 36.sp
+                            fontSize = 28.sp
                         )
-
-                        Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
                             text = "한일 교류 모임 목록",
@@ -136,7 +136,7 @@ fun MeetingListScreen(
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.Bold
                             ),
-                            fontSize = 18.sp
+                            fontSize = 14.sp
                         )
 
                         Spacer(modifier = Modifier.height(12.dp))
@@ -170,23 +170,25 @@ fun MeetingListScreen(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         OutlinedTextField(
                             value = state.searchQuery,
                             onValueChange = { onSearchQueryChange(it) },
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                            placeholder = { Text("제목 또는 장소로 검색") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp),
+                            placeholder = { Text("제목 또는 장소로 검색", fontSize = 14.sp) },
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null)},
                             singleLine = true,
                             shape = RoundedCornerShape(12.dp)
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
-
                         if (state.meetings.isEmpty()) {
                             Box(
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
@@ -204,8 +206,8 @@ fun MeetingListScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(1f), // 리스트도 남은 공간을 차지하도록 설정
-                                verticalArrangement = Arrangement.spacedBy(16.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                contentPadding = PaddingValues(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 items(state.meetings) { meeting ->
                                     MeetingListItem(
@@ -216,8 +218,6 @@ fun MeetingListScreen(
                                 }
                             }
                         }
-
-                        Spacer(modifier = Modifier.height(20.dp))
                     }
                 }
             }
