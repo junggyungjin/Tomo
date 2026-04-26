@@ -47,6 +47,7 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":feature:splash"))
     implementation(project(":feature:meeting"))
     implementation(project(":feature:mypage"))
     implementation(project(":feature:chat"))

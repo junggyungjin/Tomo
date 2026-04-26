@@ -41,6 +41,7 @@ import ja.ko.tomo.feature.meeting.meetinglist.MeetingListScreen
 import ja.ko.tomo.feature.meeting.meetinglist.MeetingListViewModel
 import ja.ko.tomo.feature.mypage.MyPageScreen
 import ja.ko.tomo.feature.mypage.MyPageViewModel
+import ja.ko.tomo.feature.splash.SplashScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -93,8 +94,17 @@ class MainActivity : ComponentActivity() {
                     Box(modifier = Modifier.padding(padding)) {
                         NavHost(
                             navController = navController,
-                            startDestination = TomoNavRoutes.MeetingList
+                            startDestination = TomoNavRoutes.Splash
                         ) {
+                            composable(TomoNavRoutes.Splash) {
+                                SplashScreen(onTimeout = {
+                                    navController.navigate(TomoNavRoutes.MeetingList) {
+                                        // 스택에서 스플래쉬화면 삭제
+                                        popUpTo(TomoNavRoutes.Splash) { inclusive = true}
+                                    }
+                                })
+                            }
+
                             composable(TomoNavRoutes.MeetingList) {
                                 val listUiState by listViewModel.uiState.collectAsStateWithLifecycle()
 
