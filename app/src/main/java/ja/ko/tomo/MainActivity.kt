@@ -29,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import ja.ko.tomo.core.navigation.TomoNavRoutes
 import ja.ko.tomo.core.navigation.bottomNavItem
 import ja.ko.tomo.core.ui.theme.TomoTheme
+import ja.ko.tomo.feature.auth.AuthIntroScreen
 import ja.ko.tomo.feature.chat.ChatListScreen
 import ja.ko.tomo.feature.chat.ChatListViewModel
 import ja.ko.tomo.feature.chatroom.ChatRoomScreen
@@ -57,12 +58,14 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
-                // 메인 화면 일때만 하단 바 노출 결정
-                val showBottomBar = currentRoute in listOf(
+                val mainTabRoutes = listOf(
                     TomoNavRoutes.MeetingList,
                     TomoNavRoutes.ChatList,
                     TomoNavRoutes.MyPage
                 )
+
+                // 메인 화면 일때만 하단 바 노출 결정
+                val showBottomBar = currentRoute in mainTabRoutes
 
                 Scaffold(
                     bottomBar = {
@@ -98,11 +101,24 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable(TomoNavRoutes.Splash) {
                                 SplashScreen(onTimeout = {
-                                    navController.navigate(TomoNavRoutes.MeetingList) {
+                                    navController.navigate(TomoNavRoutes.AuthIntro) {
                                         // 스택에서 스플래쉬화면 삭제
                                         popUpTo(TomoNavRoutes.Splash) { inclusive = true}
                                     }
                                 })
+                            }
+
+                            composable(TomoNavRoutes.AuthIntro) {
+                                AuthIntroScreen(
+                                    onNavigateToSignUp =  {
+                                        navController.navigate(TomoNavRoutes.MeetingList) {
+                                            popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
+                                        }
+                                    },
+                                    onNavigateToLogin = {
+                                        // TODO 회원가입 api 만들고나서 실제 구현
+                                    }
+                                )
                             }
 
                             composable(TomoNavRoutes.MeetingList) {
