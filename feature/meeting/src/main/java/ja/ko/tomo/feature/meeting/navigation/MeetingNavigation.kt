@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.meeting
+package ja.ko.tomo.feature.meeting.navigation
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,13 +18,13 @@ import ja.ko.tomo.feature.meeting.meetinglist.MeetingListScreen
 import ja.ko.tomo.feature.meeting.meetinglist.MeetingListViewModel
 
 fun NavGraphBuilder.meetingGraph(
-    navController: NavController,
-    listViewModel: MeetingListViewModel
+    navController: NavController
 ) {
     // 모임 리스트
     composable(
         route = TomoNavRoutes.MeetingList
     ) {
+        val listViewModel: MeetingListViewModel = hiltViewModel()
         val listUiState by listViewModel.uiState.collectAsStateWithLifecycle()
 
         LaunchedEffect(Unit) {

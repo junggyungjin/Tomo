@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.chat
+package ja.ko.tomo.feature.chat.chatlist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +37,7 @@ import ja.ko.tomo.core.ui.theme.DarkGray
 import ja.ko.tomo.core.ui.theme.Gray
 import ja.ko.tomo.core.ui.theme.TomoBlue
 import ja.ko.tomo.domain.model.ChatRoom
+import ja.ko.tomo.feature.chat.R
 
 @Composable
 fun ChatListScreen(

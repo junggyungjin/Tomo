@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.chatroom
+package ja.ko.tomo.feature.chat.chatroom
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

@@ -28,7 +28,8 @@ import ja.ko.tomo.core.ui.theme.TomoBlue
 @Composable
 fun AuthIntroScreen(
     onNavigateToSignUp: () -> Unit,
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    onNavigateToInquiry: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -77,7 +78,7 @@ fun AuthIntroScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             // 문의하기 텍스트버튼
-            TextButton(onClick = { /* 문의하기 로직 */}) {
+            TextButton(onClick = onNavigateToInquiry) {
                 Text(
                     text = stringResource(R.string.auth_intro_inquiry),
                     color = Color.White.copy(alpha = 0.8f),

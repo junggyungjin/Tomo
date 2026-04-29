@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.chat
+package ja.ko.tomo.feature.chatlist
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

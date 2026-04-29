@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.chatroom
+package ja.ko.tomo.feature.chat.chatroom
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

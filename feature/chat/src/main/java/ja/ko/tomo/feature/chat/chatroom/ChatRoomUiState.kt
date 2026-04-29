@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.chatroom
+package ja.ko.tomo.feature.chat.chatroom
 
 import ja.ko.tomo.domain.model.ChatMessage
 

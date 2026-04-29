@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.chat
+package ja.ko.tomo.feature.chatlist
 
 import org.junit.Test
 

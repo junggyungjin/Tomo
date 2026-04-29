@@ -72,14 +72,6 @@ class MeetingDetailViewModel @Inject constructor(
             when (result) {
                 is MeetingResult.Success -> {
                     _uiState.value = result.meeting.toDetailUiState()
-                    // UI layer will need to handle localized strings for side effects 
-                    // or we could use a resource ID based effect. For now, using hardcoded
-                    // strings for effects that come from logic is common if not using a
-                    // resource provider in VM, but let's try to be consistent.
-                    // Since the effect takes a String, we'd need to change the effect definition
-                    // or keep it as is. Let's keep it as is for simplicity if the user didn't ask
-                    // to change the architecture, but we'll use the resources we defined.
-                    // Actually, the Screen already has access to R.string.
                 }
 
                 is MeetingResult.Error -> {

@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.chat
+package ja.ko.tomo.feature.chat.chatlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
