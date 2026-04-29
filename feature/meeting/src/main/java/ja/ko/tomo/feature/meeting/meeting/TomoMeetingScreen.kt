@@ -29,13 +29,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ja.ko.tomo.core.ui.theme.Black
 import ja.ko.tomo.core.ui.theme.DarkGray
-import ja.ko.tomo.core.ui.theme.DarkGrey
 import ja.ko.tomo.core.ui.theme.DarkerGrey
 import ja.ko.tomo.core.ui.theme.Gray
 import ja.ko.tomo.core.ui.theme.LightGrey
@@ -43,6 +43,7 @@ import ja.ko.tomo.core.ui.theme.MediumGrey
 import ja.ko.tomo.core.ui.theme.TomoBlue
 import ja.ko.tomo.core.ui.theme.TomoTheme
 import ja.ko.tomo.domain.model.Meeting
+import ja.ko.tomo.feature.meeting.R
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -75,7 +76,7 @@ fun TomoMeetingScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Loading...")
+                    Text(text = stringResource(R.string.meeting_today_loading))
                 }
             }
 
@@ -85,7 +86,7 @@ fun TomoMeetingScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "오늘 예정된 한일 교류 모임이 없습니다")
+                    Text(text = stringResource(R.string.meeting_today_empty))
                 }
             }
 
@@ -115,7 +116,7 @@ fun TomoMeetingScreen(
                         fontSize = 40.sp
                     )
                     Text(
-                        text = "오늘의 한일 교류 모임",
+                        text = stringResource(R.string.meeting_today_header),
                         modifier = Modifier.padding(bottom = 20.dp),
                         color = DarkGray,
                         style = MaterialTheme.typography.titleSmall.copy(
@@ -168,7 +169,7 @@ private fun TomoMeetingCard(
 
             Text(
                 text = successState.meeting.subtitle,
-                color = DarkGrey,
+                color = DarkGray,
                 fontSize = 13.sp
             )
 
@@ -243,7 +244,7 @@ private fun TomoMeetingCard(
                 )
             ) {
                 Text(
-                    text = successState.buttonText,
+                    text = stringResource(successState.buttonTextRes),
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -282,7 +283,7 @@ fun TomoMeetingSuccessPreview() {
                     isFavorite = false,
                     capacity = 4
                 ),
-                buttonText = "참가하기",
+                buttonTextRes = R.string.meeting_today_button_join,
                 isJoinEnabled = true
             ),
             event = MutableSharedFlow(),

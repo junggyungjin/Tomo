@@ -25,10 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ja.ko.tomo.core.ui.theme.TomoTheme
+import ja.ko.tomo.feature.meeting.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -84,7 +86,7 @@ fun MeetingCreateScreen(
                         OutlinedTextField(
                             value = state.title,
                             onValueChange = onTitleChange,
-                            label = { Text("제목") },
+                            label = { Text(stringResource(R.string.meeting_create_title_label)) },
                             modifier = Modifier.fillMaxWidth(),
                             enabled = !state.isSubmitting
                         )
@@ -94,7 +96,7 @@ fun MeetingCreateScreen(
                         OutlinedTextField(
                             value = state.subtitle,
                             onValueChange = onSubtitleChange,
-                            label = { Text("부제목") },
+                            label = { Text(stringResource(R.string.meeting_create_subtitle_label)) },
                             modifier = Modifier.fillMaxWidth(),
                             enabled = !state.isSubmitting
                         )
@@ -104,7 +106,7 @@ fun MeetingCreateScreen(
                         OutlinedTextField(
                             value = state.dateTime,
                             onValueChange = onDateTimeChange,
-                            label = { Text("시간") },
+                            label = { Text(stringResource(R.string.meeting_create_time_label)) },
                             modifier = Modifier.fillMaxWidth(),
                             enabled = !state.isSubmitting
                         )
@@ -114,7 +116,7 @@ fun MeetingCreateScreen(
                         OutlinedTextField(
                             value = state.location,
                             onValueChange = onLocationChange,
-                            label = { Text("장소") },
+                            label = { Text(stringResource(R.string.meeting_create_location_label)) },
                             modifier = Modifier.fillMaxWidth(),
                             enabled = !state.isSubmitting
                         )
@@ -124,7 +126,7 @@ fun MeetingCreateScreen(
                         OutlinedTextField(
                             value = state.capacity,
                             onValueChange = onCapacityChange,
-                            label = { Text("정원") },
+                            label = { Text(stringResource(R.string.meeting_create_capacity_label)) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.fillMaxWidth(),
                             enabled = !state.isSubmitting
@@ -144,7 +146,7 @@ fun MeetingCreateScreen(
                                     strokeWidth = 2.dp
                                 )
                             }else {
-                                Text("모임 만들기")
+                                Text(stringResource(R.string.meeting_create_button))
                             }
                         }
                     }

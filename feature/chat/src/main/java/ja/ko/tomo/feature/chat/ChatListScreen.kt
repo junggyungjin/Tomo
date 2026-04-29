@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -28,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,9 +45,21 @@ fun ChatListScreen(
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = Gray) {
         when (state) {
-            ChatListUiState.Loading -> {}
-            ChatListUiState.Empty -> {}
-            is ChatListUiState.Error -> {}
+            ChatListUiState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = TomoBlue)
+                }
+            }
+            ChatListUiState.Empty -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = stringResource(R.string.chat_list_empty), color = DarkGray)
+                }
+            }
+            is ChatListUiState.Error -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = state.message, color = Color.Red)
+                }
+            }
             is ChatListUiState.Success -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),

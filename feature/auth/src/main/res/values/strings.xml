@@ -1,0 +1,5 @@
+<resources>
+    <string name="auth_intro_signup">회원가입 하기</string>
+    <string name="auth_intro_login">로그인 하기</string>
+    <string name="auth_intro_inquiry">여기로 문의해 주세요</string>
+</resources>

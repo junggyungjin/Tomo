@@ -1,0 +1,5 @@
+<resources>
+    <string name="nav_meeting">모임</string>
+    <string name="nav_chat">채팅</string>
+    <string name="nav_mypage">내 정보</string>
+</resources>

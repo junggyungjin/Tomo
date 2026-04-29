@@ -1,0 +1,5 @@
+<resources>
+    <string name="mypage_loading">Loading...</string>
+    <string name="mypage_profile_desc">Profile Picture</string>
+    <string name="mypage_introduction_label">자기소개</string>
+</resources>

@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +58,7 @@ fun AuthIntroScreen(
                 colors = ButtonDefaults.buttonColors(Color.White),
                 shape = RoundedCornerShape(28.dp)
             ) {
-                Text(text = "회원가입 하기", color = TomoBlue, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.auth_intro_signup), color = TomoBlue, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
             // 로그인버튼
@@ -70,7 +71,7 @@ fun AuthIntroScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 shape = RoundedCornerShape(28.dp)
             ) {
-                Text(text = "로그인 하기", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.auth_intro_login), color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -78,7 +79,7 @@ fun AuthIntroScreen(
             // 문의하기 텍스트버튼
             TextButton(onClick = { /* 문의하기 로직 */}) {
                 Text(
-                    text = "여기로 문의해 주세요",
+                    text = stringResource(R.string.auth_intro_inquiry),
                     color = Color.White.copy(alpha = 0.8f),
                     fontSize = 14.sp
                 )

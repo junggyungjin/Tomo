@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +37,7 @@ import ja.ko.tomo.core.ui.theme.DarkGray
 import ja.ko.tomo.core.ui.theme.Gray
 import ja.ko.tomo.core.ui.theme.TomoBlue
 import ja.ko.tomo.domain.model.ChatMessage
+import ja.ko.tomo.feature.chat.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,10 +50,10 @@ fun ChatRoomScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("채팅방", fontSize = 18.sp, fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.chat_room_title), fontSize = 18.sp, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = "뒤로가기")
+                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = stringResource(R.string.chat_room_back_desc))
                     }
                 }
             )
@@ -77,7 +79,7 @@ fun ChatRoomScreen(
                 is ChatRoomUiState.Success -> {
                     if (state.messages.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text(text = "아직 대화 내용이 없습니다.", color = DarkGray)
+                            Text(text = stringResource(R.string.chat_room_empty_messages), color = DarkGray)
                         }
                     }else {
                         LazyColumn(
@@ -98,7 +100,7 @@ fun ChatRoomScreen(
                 }
                 ChatRoomUiState.Empty -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(text = "아직 대화 내용이 없습니다.", color = DarkGray)
+                        Text(text = stringResource(R.string.chat_room_empty_messages), color = DarkGray)
                     }
                 }
                 is ChatRoomUiState.Error -> {
@@ -175,7 +177,7 @@ fun ChatInputBar(
                 value = text,
                 onValueChange = onTextChange,
                 modifier = Modifier.weight(1f),
-                placeholder = { Text("메시지를 입력하세요") },
+                placeholder = { Text(stringResource(R.string.chat_room_input_placeholder)) },
                 maxLines = 3,
                 enabled = !isSending,
                 shape = RoundedCornerShape(24.dp)
@@ -184,7 +186,7 @@ fun ChatInputBar(
                 onClick = onSendClick,
                 enabled = !isSending && text.isNotBlank()
             ) {
-                Icon(Icons.Default.Send, contentDescription = "전송", tint = TomoBlue)
+                Icon(Icons.Default.Send, contentDescription = stringResource(R.string.chat_room_send_desc), tint = TomoBlue)
             }
         }
     }

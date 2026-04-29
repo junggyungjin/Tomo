@@ -34,12 +34,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,6 +53,7 @@ import ja.ko.tomo.core.ui.theme.MediumGrey
 import ja.ko.tomo.core.ui.theme.TomoBlue
 import ja.ko.tomo.core.ui.theme.TomoTheme
 import ja.ko.tomo.domain.model.Meeting
+import ja.ko.tomo.feature.meeting.R
 
 @Composable
 fun MeetingListScreen(
@@ -73,7 +74,7 @@ fun MeetingListScreen(
                 contentColor = Color.White,
                 shape = CircleShape
             ) {
-                Icon(Icons.Default.Add, contentDescription = "모임 생성")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.meeting_list_create_desc))
             }
         }
     ) { paddingValues ->
@@ -89,7 +90,7 @@ fun MeetingListScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Loading..")
+                        Text(text = stringResource(R.string.meeting_list_loading))
                     }
                 }
 
@@ -99,7 +100,7 @@ fun MeetingListScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "예정된 모임이 없습니다")
+                        Text(text = stringResource(R.string.meeting_list_empty))
                     }
                 }
 
@@ -131,7 +132,7 @@ fun MeetingListScreen(
                         )
 
                         Text(
-                            text = "한일 교류 모임 목록",
+                            text = stringResource(R.string.meeting_list_header_subtitle),
                             color = DarkGray,
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontWeight = FontWeight.Bold
@@ -152,7 +153,7 @@ fun MeetingListScreen(
                                 )
                             ) {
                                 Text(
-                                    text = "전체",
+                                    text = stringResource(R.string.meeting_list_filter_all),
                                     color = if (state.selectedFilter == MeetingListFilter.ALL) Color.White else DarkGray
                                 )
                             }
@@ -164,7 +165,7 @@ fun MeetingListScreen(
                                 )
                             ) {
                                 Text(
-                                    text = "참가한 모임",
+                                    text = stringResource(R.string.meeting_list_filter_joined),
                                     color = if (state.selectedFilter == MeetingListFilter.JOINED) Color.White else DarkGray
                                 )
                             }
@@ -178,7 +179,7 @@ fun MeetingListScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 8.dp),
-                            placeholder = { Text("제목 또는 장소로 검색", fontSize = 14.sp) },
+                            placeholder = { Text(stringResource(R.string.meeting_list_search_placeholder), fontSize = 14.sp) },
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null)},
                             singleLine = true,
                             shape = RoundedCornerShape(12.dp)
@@ -193,9 +194,9 @@ fun MeetingListScreen(
                             ) {
                                 Text(
                                     text = when {
-                                        state.searchQuery.isNotEmpty() -> "검색 결과가 없습니다"
-                                        state.selectedFilter == MeetingListFilter.JOINED -> "참가한 모임이 없습니다."
-                                        else -> "예정된 모임이 없습니다"
+                                        state.searchQuery.isNotEmpty() -> stringResource(R.string.meeting_list_search_no_result)
+                                        state.selectedFilter == MeetingListFilter.JOINED -> stringResource(R.string.meeting_list_joined_empty)
+                                        else -> stringResource(R.string.meeting_list_empty)
                                     },
                                     color = DarkGray
                                 )
@@ -261,7 +262,7 @@ private fun MeetingListItem(
                 IconButton(onClick = { onToggleFavorite(meeting.id)}) {
                     Icon(
                         imageVector = if (meeting.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "찜하기",
+                        contentDescription = stringResource(R.string.meeting_list_favorite_desc),
                         tint = if (meeting.isFavorite) Color.Red else DarkGray
                     )
                 }
@@ -337,9 +338,9 @@ private fun MeetingListItem(
 
             Text(
                 text = when {
-                    meeting.isClosed -> "마감됨"
-                    meeting.isJoined -> "참가 중"
-                    else -> "모집중"
+                    meeting.isClosed -> stringResource(R.string.meeting_status_closed)
+                    meeting.isJoined -> stringResource(R.string.meeting_status_joined)
+                    else -> stringResource(R.string.meeting_status_recruiting)
                 },
                 color = when {
                     meeting.isClosed -> DarkGray

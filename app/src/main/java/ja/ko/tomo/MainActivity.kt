@@ -12,10 +12,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -87,7 +89,8 @@ class MainActivity : ComponentActivity() {
                                                 restoreState = true
                                             }
                                         },
-                                        icon = { Icon(item.icon, contentDescription = item.name) }
+                                        icon = { Icon(item.icon, contentDescription = stringResource(item.nameRes)) },
+                                        label = { Text(stringResource(item.nameRes)) }
                                     )
                                 }
                             }

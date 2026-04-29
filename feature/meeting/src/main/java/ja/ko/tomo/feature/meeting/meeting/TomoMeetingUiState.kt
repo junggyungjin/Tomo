@@ -1,5 +1,6 @@
 package ja.ko.tomo.feature.meeting.meeting
 
+import androidx.annotation.StringRes
 import ja.ko.tomo.domain.model.Meeting
 
 sealed interface TomoMeetingUiState{
@@ -8,7 +9,7 @@ sealed interface TomoMeetingUiState{
     data class Error(val message: String) : TomoMeetingUiState
     data class Success(
         val meeting: Meeting,
-        val buttonText: String,
+        @StringRes val buttonTextRes: Int,
         val isJoinEnabled: Boolean
     ) : TomoMeetingUiState
 }

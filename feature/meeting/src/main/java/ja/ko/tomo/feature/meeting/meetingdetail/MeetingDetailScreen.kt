@@ -38,13 +38,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ja.ko.tomo.core.ui.theme.Black
 import ja.ko.tomo.core.ui.theme.DarkGray
-import ja.ko.tomo.core.ui.theme.DarkGrey
 import ja.ko.tomo.core.ui.theme.DarkerGrey
 import ja.ko.tomo.core.ui.theme.Gray
 import ja.ko.tomo.core.ui.theme.LightGrey
@@ -52,6 +52,7 @@ import ja.ko.tomo.core.ui.theme.MediumGrey
 import ja.ko.tomo.core.ui.theme.TomoBlue
 import ja.ko.tomo.core.ui.theme.TomoTheme
 import ja.ko.tomo.domain.model.Meeting
+import ja.ko.tomo.feature.meeting.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -109,7 +110,7 @@ fun MeetingDetailScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Loading...")
+                        Text(text = stringResource(R.string.meeting_list_loading))
                     }
                 }
 
@@ -161,7 +162,7 @@ private fun MeetingDetailContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "모임 상세",
+                text = stringResource(R.string.meeting_detail_header),
                 color = DarkGray,
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Bold
@@ -192,7 +193,7 @@ private fun MeetingDetailContent(
 
                     Text(
                         text = successState.meeting.subtitle,
-                        color = DarkGrey,
+                        color = DarkGray,
                         fontSize = 14.sp
                     )
 
@@ -265,9 +266,9 @@ private fun MeetingDetailContent(
 
                     Text(
                         text = when {
-                            successState.meeting.isClosed -> "마감된 모임입니다"
-                            successState.meeting.isJoined -> "참가 중인 모임입니다"
-                            else -> "현재 모집 중입니다"
+                            successState.meeting.isClosed -> stringResource(R.string.meeting_detail_status_closed)
+                            successState.meeting.isJoined -> stringResource(R.string.meeting_detail_status_joined)
+                            else -> stringResource(R.string.meeting_detail_status_recruiting)
                         },
                         color = when {
                             successState.meeting.isClosed -> DarkGray
@@ -291,7 +292,7 @@ private fun MeetingDetailContent(
                         )
                     ) {
                         Text(
-                            text = successState.buttonText,
+                            text = stringResource(successState.buttonTextRes),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -309,7 +310,7 @@ private fun MeetingDetailContent(
         ) {
             Icon(
                 imageVector = if (successState.meeting.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                contentDescription = "찜하기",
+                contentDescription = stringResource(R.string.meeting_list_favorite_desc),
                 tint = if (successState.meeting.isFavorite) Color.Red else DarkGray,
                 modifier = Modifier.size(32.dp)
             )
@@ -348,7 +349,7 @@ fun MeetingDetailSuccessPreview() {
                     isFavorite = false,
                     capacity = 4
                 ),
-                buttonText = "참가하기",
+                buttonTextRes = R.string.meeting_today_button_join,
                 isButtonEnabled = true
             ),
             effect = emptyFlow(),

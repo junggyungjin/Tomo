@@ -1,0 +1,40 @@
+<resources>
+    <string name="meeting_create_title_label">제목</string>
+    <string name="meeting_create_subtitle_label">부제목</string>
+    <string name="meeting_create_time_label">시간</string>
+    <string name="meeting_create_location_label">장소</string>
+    <string name="meeting_create_capacity_label">정원</string>
+    <string name="meeting_create_button">모임 만들기</string>
+    <string name="meeting_create_success">모임 생성이 완료되었습니다!</string>
+
+    <string name="meeting_list_create_desc">모임 생성</string>
+    <string name="meeting_list_loading">Loading..</string>
+    <string name="meeting_list_empty">예정된 모임이 없습니다</string>
+    <string name="meeting_list_header_subtitle">한일 교류 모임 목록</string>
+    <string name="meeting_list_filter_all">전체</string>
+    <string name="meeting_list_filter_joined">참가한 모임</string>
+    <string name="meeting_list_search_placeholder">제목 또는 장소로 검색</string>
+    <string name="meeting_list_search_no_result">검색 결과가 없습니다</string>
+    <string name="meeting_list_joined_empty">참가한 모임이 없습니다.</string>
+    <string name="meeting_list_favorite_desc">찜하기</string>
+
+    <string name="meeting_status_closed">마감됨</string>
+    <string name="meeting_status_joined">참가 중</string>
+    <string name="meeting_status_recruiting">모집중</string>
+
+    <string name="meeting_today_loading">Loading...</string>
+    <string name="meeting_today_empty">오늘 예정된 한일 교류 모임이 없습니다</string>
+    <string name="meeting_today_header">오늘의 한일 교류 모임</string>
+    <string name="meeting_today_button_join">참가하기</string>
+    <string name="meeting_today_toast_success">참가 완료</string>
+    <string name="meeting_today_error_load">모임 정보를 불러오지 못했습니다</string>
+
+    <string name="meeting_detail_header">모임 상세</string>
+    <string name="meeting_detail_status_closed">마감된 모임입니다</string>
+    <string name="meeting_detail_status_joined">참가 중인 모임입니다</string>
+    <string name="meeting_detail_status_recruiting">현재 모집 중입니다</string>
+    <string name="meeting_detail_button_cancel">참가 취소</string>
+    <string name="meeting_detail_join_success">참가가 완료되었습니다!</string>
+    <string name="meeting_detail_cancel_success">참가가 취소되었습니다</string>
+    <string name="meeting_detail_error_not_found">모임 정보를 찾을 수 없습니다</string>
+</resources>

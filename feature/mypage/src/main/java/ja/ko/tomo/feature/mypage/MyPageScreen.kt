@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,7 @@ fun MyPageScreen(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Loading...")
+                    Text(text = stringResource(R.string.mypage_loading))
                 }
             }
             is MyPageUiState.Error -> {
@@ -75,7 +76,7 @@ private fun MyPageContent(
         // 프사
         Icon(
             imageVector = Icons.Default.AccountCircle,
-            contentDescription = "Profile Picture",
+            contentDescription = stringResource(R.string.mypage_profile_desc),
             modifier = Modifier.size(120.dp),
             tint = TomoBlue
         )
@@ -102,7 +103,7 @@ private fun MyPageContent(
 
         // 자기소개 라벨
         Text(
-            text = "자기소개",
+            text = stringResource(R.string.mypage_introduction_label),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.Start)
@@ -113,7 +114,7 @@ private fun MyPageContent(
             text = user.introduction,
             fontSize = 16.sp,
             modifier = Modifier.align(Alignment.Start),
-            lineHeight = 24.sp // TODO 질문 이건 무슨 옵션이야?
+            lineHeight = 24.sp
         )
     }
 }

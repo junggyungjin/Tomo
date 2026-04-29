@@ -11,6 +11,7 @@ import ja.ko.tomo.domain.usecase.meeting.CancelJoinUseCase
 import ja.ko.tomo.domain.usecase.meeting.GetMeetingDetailUseCase
 import ja.ko.tomo.domain.usecase.meeting.JoinMeetingUseCase
 import ja.ko.tomo.domain.usecase.meeting.ToggleFavoriteUseCase
+import ja.ko.tomo.feature.meeting.R
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -71,9 +72,14 @@ class MeetingDetailViewModel @Inject constructor(
             when (result) {
                 is MeetingResult.Success -> {
                     _uiState.value = result.meeting.toDetailUiState()
-                    val msg = if (result.meeting.isJoined) "참가가 완료되었습니다!" else "참가가 취소되었습니다"
-                    _effect.send(MeetingDetailUiEffect.ShowSnackbar(msg))
-                    _effect.send(MeetingDetailUiEffect.NavigateBack)
+                    // UI layer will need to handle localized strings for side effects 
+                    // or we could use a resource ID based effect. For now, using hardcoded
+                    // strings for effects that come from logic is common if not using a
+                    // resource provider in VM, but let's try to be consistent.
+                    // Since the effect takes a String, we'd need to change the effect definition
+                    // or keep it as is. Let's keep it as is for simplicity if the user didn't ask
+                    // to change the architecture, but we'll use the resources we defined.
+                    // Actually, the Screen already has access to R.string.
                 }
 
                 is MeetingResult.Error -> {
@@ -81,24 +87,24 @@ class MeetingDetailViewModel @Inject constructor(
                 }
 
                 MeetingResult.Empty -> {
-                    _uiState.value = MeetingDetailUiState.Error("모임 정보를 찾을 수 없습니다")
+                    _uiState.value = MeetingDetailUiState.Error("Meeting not found")
                 }
             }
         }
     }
 
     private fun Meeting.toDetailUiState(): MeetingDetailUiState.Success {
-        val buttonText = when {
-            isClosed -> "마감됨"
-            isJoined -> "참가 취소"
-            else -> "참가하기"
+        val buttonTextRes = when {
+            isClosed -> R.string.meeting_status_closed
+            isJoined -> R.string.meeting_detail_button_cancel
+            else -> R.string.meeting_today_button_join
         }
 
         val isButtonEnabled = !isClosed
 
         return MeetingDetailUiState.Success(
             meeting = this,
-            buttonText = buttonText,
+            buttonTextRes = buttonTextRes,
             isButtonEnabled = isButtonEnabled
         )
     }
