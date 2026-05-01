@@ -9,16 +9,12 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import ja.ko.tomo.core.navigation.TomoNavRoutes
 import ja.ko.tomo.core.navigation.bottomNavItem
 import ja.ko.tomo.core.ui.theme.TomoTheme
@@ -27,44 +23,34 @@ import ja.ko.tomo.feature.chat.navigation.chatGraph
 import ja.ko.tomo.feature.meeting.navigation.meetingGraph
 import ja.ko.tomo.feature.mypage.navigation.myPageGraph
 import ja.ko.tomo.feature.splash.navigation.splashGraph
-import kotlin.collections.contains
 
 @Composable
-fun TomoApp() {
+fun TomoApp(
+    appState: TomoAppState = rememberTomoAppState() // StateHolder 주입
+) {
     TomoTheme {
-        val navController = rememberNavController()
-        // 현재 네비게이션 상태 추적
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-
-        val mainTabRoutes = listOf(
-            TomoNavRoutes.MeetingList,
-            TomoNavRoutes.ChatList,
-            TomoNavRoutes.MyPage
-        )
-
-        // 메인 화면 일때만 하단 바 노출 결정
-        val showBottomBar = currentRoute in mainTabRoutes
-
         Scaffold(
             bottomBar = {
-                if (showBottomBar) {
+                if (appState.shouldShowBottomBar) {
                     TomoBottomBar(
-                        navController = navController,
-                        currentRoute = currentRoute
+                        currentRoute = appState.currentDestination?.route,
+                        onNavigate = { route -> appState.navigateToTopLevelDestination(route)}
                     )
                 }
             }
         ) { padding ->
             Box(modifier = Modifier.padding(padding)) {
-                TomoNavHost(navController = navController)
+                TomoNavHost(navController = appState.navController)
             }
         }
     }
 }
 
 @Composable
-private fun TomoBottomBar(navController: NavController, currentRoute: String?) {
+private fun TomoBottomBar(
+    currentRoute: String?,
+    onNavigate: (String) -> Unit // NavController 대신 콜백을 받음(결합도 낮춤)
+) {
     NavigationBar(
         modifier = Modifier.height(100.dp),
         containerColor = Color.White,
@@ -73,15 +59,7 @@ private fun TomoBottomBar(navController: NavController, currentRoute: String?) {
         bottomNavItem.forEach { item ->
             NavigationBarItem(
                 selected = currentRoute == item.route,
-                onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
+                onClick = { onNavigate(item.route) }, // 위임 받은 함수 실행
                 icon = { Icon(item.icon, contentDescription = stringResource(item.nameRes)) },
                 label = { Text(stringResource(item.nameRes)) }
             )
