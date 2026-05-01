@@ -7,7 +7,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import ja.ko.tomo.core.navigation.TomoNavRoutes
 import ja.ko.tomo.core.navigation.bottomNavItem
 
 @Composable
