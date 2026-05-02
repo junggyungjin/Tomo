@@ -7,4 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- 💡 Kotlin의 TomoBlue(0xFF4A90E2)와 맞춘 색상 추가 -->
+    <color name="tomo_blue">#4A90E2</color>
 </resources>

@@ -3,12 +3,11 @@
 agp = "8.13.2"
 kotlin = "2.1.10"
 ksp = "2.1.10-1.0.31"
-
 # Core & UI
 coreKtx = "1.18.0"
 appcompat = "1.7.1"
 material = "1.13.0"
-
+coreSplashScreen = "1.0.1"
 # Lifecycle
 lifecycleRuntimeKtx = "2.10.0"
 androidxLifecycle = "2.8.6"
@@ -74,6 +73,9 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 
 # Timber
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref ="timber" }
+
+# Splash
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashScreen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

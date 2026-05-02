@@ -1,7 +1,6 @@
 package ja.ko.tomo.core.navigation
 
 object TomoNavRoutes {
-    const val Splash = "splash"
     const val AuthIntro = "auth_intro" // 로그인/회원가입 선택 화면
     const val Login = "login"           // 실제 로그인 입력 화면
     const val SignUp = "signup"         // 회원가입 입력 화면

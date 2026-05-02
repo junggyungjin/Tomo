@@ -21,7 +21,6 @@
             <option value="$PROJECT_DIR$/feature/chat" />
             <option value="$PROJECT_DIR$/feature/meeting" />
             <option value="$PROJECT_DIR$/feature/mypage" />
-            <option value="$PROJECT_DIR$/feature/splash" />
           </set>
         </option>
       </GradleProjectSettings>

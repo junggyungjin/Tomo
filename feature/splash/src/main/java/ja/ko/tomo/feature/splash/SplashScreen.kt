@@ -24,7 +24,7 @@ fun SplashScreen(
 ) {
     // 화면이 처음으로 나탈때 딱 한번 실행 됨
     LaunchedEffect(Unit) {
-        delay(5000)
+        delay(500)
         onTimeout()
     }
 

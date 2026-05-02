@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 기본 앱 테마 -->
+    <style name="Theme.Tomo" parent="Theme.Material3.DayNight.NoActionBar" />
 
-    <style name="Theme.Tomo" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- 스플래시 전용 테마 -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- 스플래시 배경색 -->
+        <item name="windowSplashScreenBackground">#FFFFFF</item>
+        <!-- 중앙에 표시될 아이콘 (아이콘이 없다면 @mipmap/ic_launcher 사용) -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!-- 스플래시 종료 후 전환될 실제 앱 테마 -->
+        <item name="postSplashScreenTheme">@style/Theme.Tomo</item>
+    </style>
 </resources>

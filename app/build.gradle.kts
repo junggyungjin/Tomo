@@ -48,7 +48,6 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
-    implementation(project(":feature:splash"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:meeting"))
     implementation(project(":feature:mypage"))
@@ -68,6 +67,7 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
 
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
