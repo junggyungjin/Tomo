@@ -1,6 +1,8 @@
 package ja.ko.tomo
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -43,10 +45,11 @@ fun TomoApp(
                 }
             }
         ) { padding ->
-            Box(modifier = Modifier.padding(padding)) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 TomoNavHost(
                     navController = appState.navController,
-                    startDestination = startDestination
+                    startDestination = startDestination,
+                    innerPadding = padding
                 )
             }
         }
@@ -77,11 +80,13 @@ private fun TomoBottomBar(
 @Composable
 private fun TomoNavHost(
     navController: NavHostController,
-    startDestination: String // 파라미터 추가
+    startDestination: String, // 파라미터 추가
+    innerPadding: PaddingValues
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        modifier = Modifier.fillMaxSize()
     ) {
         // 이제 시스템 스플래시를 쓰므로 기존 splashGraph(navController)는 여기서 제거해도 됩니다.
         authGraph(navController)
