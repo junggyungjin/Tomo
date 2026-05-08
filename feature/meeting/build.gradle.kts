@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.kotlin.bom))
     implementation(project(":domain"))
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
