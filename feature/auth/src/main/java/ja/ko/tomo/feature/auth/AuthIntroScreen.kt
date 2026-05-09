@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,32 +15,99 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import ja.ko.tomo.core.ui.component.SystemBarVisuals
 import ja.ko.tomo.core.ui.component.VideoBackground
 import ja.ko.tomo.core.ui.theme.TomoBlue
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 @Composable
 fun AuthIntroScreen(
+    state: AuthIntroUiState,
+    effect: Flow<AuthIntroUiEffect>,
     onNavigateToSignUp: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    onNavigateToInquiry: () -> Unit
+    onInquiryClick: () -> Unit, // 1. UI가 뷰모델에 알림
+    onNavigateToInquiry: () -> Unit, // 2. 뷰머델이 UI에 시킴
+    onUserReturned: () -> Unit
 ) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // 앱 복귀 감지 로직
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                onUserReturned()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    LaunchedEffect(effect) {
+        effect.collect { uiEffect ->
+            when (uiEffect) {
+                is AuthIntroUiEffect.NavigateToInquiry -> {
+                    onNavigateToInquiry()
+                }
+                is AuthIntroUiEffect.ShowSnackbar -> {
+                    val message = context.getString(uiEffect.resId)
+                    val job = launch {
+                        snackbarHostState.showSnackbar(
+                            message = message,
+                            duration = SnackbarDuration.Indefinite
+                        )
+                    }
+                    delay(1500)
+                    job.cancel()
+                }
+            }
+        }
+    }
+
     // stateless content만 호출 (여기에 ui 로직은 없음)
-    AuthIntroContent(
-        onSignUpClick = onNavigateToSignUp,
-        onLoginClick = onNavigateToLogin,
-        onInquiryClick = onNavigateToInquiry
-    )
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color.Transparent, // 배경 비디오가 보여야 하므로 투명하게 설정
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+    ) { padding ->
+        // 기존 UI 레이아웃 호출
+        // Box가 전체 화면을 다 써야 하므로 padding을 여기서 적용하지 않거나 적절히 처리합니다.
+        Box(modifier = Modifier.padding(padding)) {
+            AuthIntroContent(
+                onSignUpClick = onNavigateToSignUp,
+                onLoginClick = onNavigateToLogin,
+                onInquiryClick = onInquiryClick
+            )
+        }
+    }
 }
 
 @Composable
@@ -88,7 +156,9 @@ private fun AuthIntroContent(
             // 회원가입 버튼
             Button(
                 onClick = onSignUpClick,
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
                 colors = ButtonDefaults.buttonColors(Color.White),
                 shape = RoundedCornerShape(28.dp)
             ) {

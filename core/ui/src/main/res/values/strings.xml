@@ -1,0 +1,5 @@
+<resources>
+    <string name="core_ui_inquiry_subject_tomo">[Tomo 문의하기]</string>
+    <string name="core_ui_inquiry_send">문의 메일 보내기</string>
+    <string name="core_ui_not_found_email">이메일 앱을 찾을 수 없습니다.</string>
+</resources>

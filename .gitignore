@@ -8,3 +8,4 @@ build/
 .externalNativeBuild
 .cxx
 .kotlin/
+Project_rule.md
