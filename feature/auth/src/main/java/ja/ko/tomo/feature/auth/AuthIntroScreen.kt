@@ -37,6 +37,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import ja.ko.tomo.core.ui.component.SystemBarVisuals
+import ja.ko.tomo.core.ui.component.TomoSnackbar
 import ja.ko.tomo.core.ui.component.VideoBackground
 import ja.ko.tomo.core.ui.theme.TomoBlue
 import kotlinx.coroutines.delay
@@ -85,7 +86,7 @@ fun AuthIntroScreen(
                             duration = SnackbarDuration.Indefinite
                         )
                     }
-                    delay(1500)
+                    delay(2500)
                     job.cancel()
                 }
             }
@@ -94,7 +95,11 @@ fun AuthIntroScreen(
 
     // stateless content만 호출 (여기에 ui 로직은 없음)
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                TomoSnackbar(snackbarData = data)
+            }
+        },
         containerColor = Color.Transparent, // 배경 비디오가 보여야 하므로 투명하게 설정
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->

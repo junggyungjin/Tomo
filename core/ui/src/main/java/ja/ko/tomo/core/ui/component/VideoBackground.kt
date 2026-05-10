@@ -50,7 +50,7 @@ fun VideoBackground(
     }
 
     // 2. 생명주기 관리: 컴포저블이 화면에서 사라질 때 플레이어 해제, 앱이 백그라운드로 가면 일시정지, 포그라운드로 오면 재생 (메모리 누수 방지)
-    DisposableEffect(lifecycleOwner) {
+    DisposableEffect(exoPlayer) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_RESUME -> exoPlayer.play()
@@ -76,6 +76,11 @@ fun VideoBackground(
                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     setBackgroundColor(android.graphics.Color.TRANSPARENT)
                 }
+            },
+            // 3. AndroidView의 update 블록 활용
+            // 플레이어 인스턴스가 바뀌었을 때 View에 다시 연결
+            update = { playerView ->
+                playerView.player = exoPlayer
             },
             modifier = Modifier.fillMaxSize()
         )
