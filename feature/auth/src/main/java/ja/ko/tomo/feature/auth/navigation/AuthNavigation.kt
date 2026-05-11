@@ -29,7 +29,10 @@ fun NavGraphBuilder.authGraph(
                 }
             },
             onNavigateToLogin = {
-                // TODO 회원가입 api 만들고나서 실제 구현
+                // TODO 로그인 api 만들고나서 실제 구현
+                navController.navigate(TomoNavRoutes.MeetingList) {
+                    popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
+                }
             },
             onInquiryClick = {
                 authViewModel.onInquiryClick()

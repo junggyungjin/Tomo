@@ -3,7 +3,7 @@ package ja.ko.tomo.core.navigation
 object TomoNavRoutes {
     const val AuthIntro = "auth_intro" // 로그인/회원가입 선택 화면
     const val Login = "login"           // 실제 로그인 입력 화면
-    const val SignUp = "signup"         // 회원가입 입력 화면
+    const val SignUp = "sign_up"         // 회원가입 입력 화면
     const val MeetingList = "meeting_list"
     const val MeetingDetail = "meeting_detail"
     const val MeetingCreate = "meeting_create"

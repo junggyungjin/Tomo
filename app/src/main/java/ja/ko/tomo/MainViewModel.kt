@@ -26,8 +26,6 @@ class MainViewModel @Inject constructor() : ViewModel() {
             // 3. 자동 로그인 토큰 유효성 검사 등
             Timber.e("MainViewModel isReady : ${isReady.value}")
 
-            delay(1500) // 실제 작업 대신 1.5초의 가상 로딩 시간을 줍니다.
-
             // 모든 작업이 끝나면 준비 완료 신호를 보냅니다.
             _isReady.value = true
         }

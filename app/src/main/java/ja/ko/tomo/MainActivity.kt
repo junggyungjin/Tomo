@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 시스템 스플래시
         val splashScreen = installSplashScreen()
 
         super.onCreate(savedInstanceState)

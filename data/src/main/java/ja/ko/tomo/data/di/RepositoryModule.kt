@@ -4,9 +4,11 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ja.ko.tomo.data.repository.AuthRepositoryImpl
 import ja.ko.tomo.data.repository.FakeChatRepositoryImpl
 import ja.ko.tomo.data.repository.FakeMeetingRepositoryImpl
 import ja.ko.tomo.data.repository.FakeUserRepositoryImpl
+import ja.ko.tomo.domain.repository.AuthRepository
 import ja.ko.tomo.domain.repository.ChatRepository
 import ja.ko.tomo.domain.repository.MeetingRepository
 import ja.ko.tomo.domain.repository.UserRepository
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindChatRepository(
         fakeChatRepositoryImpl: FakeChatRepositoryImpl
     ): ChatRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        authRepositoryImpl: AuthRepositoryImpl
+    ): AuthRepository
 }
