@@ -36,24 +36,26 @@ class SocialSignUpViewModel @Inject constructor(
         viewModelScope.launch {
             val currentState = _uiState.value
             if (currentState is SocialSignUpUiState.Success) {
-                _uiState.update { currentState.copy(isSigngUp = true) }
+                _uiState.update { currentState.copy(isSigningUp = true) }
 
-                when (val result = signUpWithSocialUseCase(provider = "google", idToken = idToken)) {
-                    is AuthResult.Success -> {
-                        _effect.send(SocialSignUpUiEffect.NavigateToNext)
+                try {
+                    when (val result = signUpWithSocialUseCase(provider = "google", idToken = idToken)) {
+                        is AuthResult.Success -> {
+                            _effect.send(SocialSignUpUiEffect.NavigateToNext)
+                        }
+                        is AuthResult.Error -> {
+                            _effect.send(SocialSignUpUiEffect.ShowToast(result.message))
+                        }
+                        AuthResult.Empty -> {
+                            _effect.send(SocialSignUpUiEffect.ShowSnackbar(R.string.auth_sing_up_empty))
+                        }
                     }
-                    is AuthResult.Error -> {
-                        _effect.send(SocialSignUpUiEffect.ShowToast(result.message))
-                    }
-                    AuthResult.Empty -> {
-                        _effect.send(SocialSignUpUiEffect.ShowSnackbar(R.string.auth_sing_up_empty))
+                } finally {
+                    _uiState.update {
+                        if (it is SocialSignUpUiState.Success) it.copy(isSigningUp = false) else it
                     }
                 }
             }
-        }
-
-        _uiState.update {
-            if (it is SocialSignUpUiState.Success) it.copy(isSigngUp = false) else it
         }
     }
 

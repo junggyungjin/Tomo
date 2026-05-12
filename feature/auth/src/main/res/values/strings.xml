@@ -1,8 +1,22 @@
 <resources>
+    <!-- AuthIntro -->
     <string name="auth_intro_signup">회원가입 하기</string>
     <string name="auth_intro_login">로그인 하기</string>
     <string name="auth_intro_inquiry">여기로 문의해 주세요</string>
     <string name="auth_intro_inquiry_email_send_completed">문의 메일을 보냈습니다</string>
 
+    <!-- Social Sign Up ViewModel -->
     <string name="auth_sing_up_empty">회원가입 정보가 없습니다.</string>
+
+    <!-- Social Sign Up Screen -->
+    <string name="social_signup_title">새로 가입</string>
+    <string name="social_signup_logo_text">Tomo!</string>
+    <string name="social_signup_subtitle">눈치 안 볼래\n재미있게 놀래</string>
+    <string name="social_signup_google">Google로 계속</string>
+    <string name="social_signup_terms">다음을 진행하면 이용 약관 및 개인정보 처리방침에\n동의한 것으로 간주됩니다.</string>
+
+    <!-- Error Messages -->
+    <string name="auth_error_google_login">구글 로그인 실패: %1$s</string>
+
+    <string name="google_web_client_id">831538870114-nam04ognooopgklj36fspsgak85mt7ur.apps.googleusercontent.com</string>
 </resources>
