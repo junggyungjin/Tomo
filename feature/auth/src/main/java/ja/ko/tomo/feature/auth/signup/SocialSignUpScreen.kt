@@ -46,6 +46,7 @@ import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import ja.ko.tomo.core.ui.component.TomoSnackbar
+import ja.ko.tomo.core.ui.component.TomoStateView
 import ja.ko.tomo.core.ui.theme.TomoBlue
 import ja.ko.tomo.core.ui.theme.TomoTheme
 import ja.ko.tomo.feature.auth.R
@@ -62,7 +63,8 @@ fun SocialSignUpScreen(
     onGoogleSignUpClick: (String) -> Unit,
     onBackButtonClick: () -> Unit,
     onNavigateBack: () -> Unit,
-    onNavigateToNext: () -> Unit
+    onNavigateToNext: () -> Unit,
+    onRetry: () -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -118,36 +120,43 @@ fun SocialSignUpScreen(
             )
         }
     ) { padding ->
-        SocialSignUpContent(
-            modifier = Modifier.padding(padding),
-            state = state,
-            onGoogleButtonClick = {
-                scope.launch {
-                    try {
-                        val googleIdOption = GetGoogleIdOption.Builder()
-                            .setFilterByAuthorizedAccounts(false)
-                            .setServerClientId(context.getString(R.string.google_web_client_id))
-                            .build()
+        TomoStateView(
+            isLoading = state is SocialSignUpUiState.Loading,
+            errorMessage = (state as? SocialSignUpUiState.Error)?.message,
+            isSuccess = state is SocialSignUpUiState.Success,
+            onRetry = onRetry,
+            modifier = Modifier.padding(padding)
+        ) {
+            SocialSignUpContent(
+                state = state as SocialSignUpUiState.Success,
+                onGoogleButtonClick = {
+                    scope.launch {
+                        try {
+                            val googleIdOption = GetGoogleIdOption.Builder()
+                                .setFilterByAuthorizedAccounts(false)
+                                .setServerClientId(context.getString(R.string.google_web_client_id))
+                                .build()
 
-                        val request = GetCredentialRequest.Builder()
-                            .addCredentialOption(googleIdOption)
-                            .build()
+                            val request = GetCredentialRequest.Builder()
+                                .addCredentialOption(googleIdOption)
+                                .build()
 
-                        val result = credentialManager.getCredential(context, request)
-                        val credential = result.credential
+                            val result = credentialManager.getCredential(context, request)
+                            val credential = result.credential
 
-                        if (credential is GoogleIdTokenCredential) {
-                            onGoogleSignUpClick(credential.idToken)
+                            if (credential is GoogleIdTokenCredential) {
+                                onGoogleSignUpClick(credential.idToken)
+                            }
+                        }catch (e: Exception) {
+                            // 에러 시 스낵바 처리는 유지 (부분 에러이므로)
+                            snackbarHostState.showSnackbar(
+                                context.getString(R.string.auth_error_google_login, e.localizedMessage ?: "Unknown")
+                            )
                         }
-                    } catch (e: Exception) {
-                        snackbarHostState.showSnackbar(
-                            context.getString(R.string.auth_error_google_login, e.localizedMessage ?: "Unknown")
-                        )
-                        e.printStackTrace()
                     }
                 }
-            }
-        )
+            )
+        }
     }
 }
 
@@ -258,7 +267,8 @@ private fun SocialSignUpScreenPreview() {
             onGoogleSignUpClick = {},
             onBackButtonClick = {},
             onNavigateBack = {},
-            onNavigateToNext = {}
+            onNavigateToNext = {},
+            onRetry = {}
         )
     }
 }
@@ -273,7 +283,8 @@ private fun SocialSignUpScreenLoadingPreview() {
             onGoogleSignUpClick = {},
             onBackButtonClick = {},
             onNavigateBack = {},
-            onNavigateToNext = {}
+            onNavigateToNext = {},
+            onRetry = {}
         )
     }
 }

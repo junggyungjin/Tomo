@@ -27,7 +27,21 @@ class SocialSignUpViewModel @Inject constructor(
     val effect = _effect.receiveAsFlow()
 
     init {
-        _uiState.value = SocialSignUpUiState.Success()
+        initScreen()
+    }
+
+    /**
+     * // 화면 초기화 및 재시도 로직
+     */
+    fun initScreen() {
+        _uiState.value = SocialSignUpUiState.Loading
+        try {
+            // 예: 서버에서 소셜 가입 설정(약관 등)을 가져온다고 가정
+            // val config = getSignUpConfigUseCase()
+            _uiState.value = SocialSignUpUiState.Success()
+        }catch (e: Exception) {
+            handleError(e)
+        }
     }
 
     /**
@@ -51,6 +65,10 @@ class SocialSignUpViewModel @Inject constructor(
                             _effect.send(SocialSignUpUiEffect.ShowSnackbar(UiText.StringResource(R.string.auth_sing_up_empty)))
                         }
                     }
+                } catch (e: Exception) {
+                    // 예상치 못한 시스템 런타임 에러 발생 시 처리
+                    // 가입 중에 화면을 아예 에러 뷰로 바꿔버릴지, 아니면 Snackbar를 띄울지 선택
+                  handleError(e)
                 } finally {
                     _uiState.update {
                         if (it is SocialSignUpUiState.Success) it.copy(isSigningUp = false) else it
@@ -64,5 +82,14 @@ class SocialSignUpViewModel @Inject constructor(
         viewModelScope.launch {
             _effect.send(SocialSignUpUiEffect.NavigateBack)
         }
+    }
+
+    /**
+     * 전체 화면 에러 핸들 처리 용도
+     */
+    private fun handleError(exception: Exception) {
+        _uiState.value = SocialSignUpUiState.Error(
+            message = UiText.DynamicString(exception.localizedMessage ?: "UnKnown Error")
+        )
     }
 }

@@ -23,7 +23,9 @@ fun NavGraphBuilder.authGraph(
         val authIntroUiState by authViewModel.uiState.collectAsStateWithLifecycle()
         val context = LocalContext.current
 
-        // 인증 인트로 화면(진입점)
+        /**
+         * 인증 인트로 화면(진입점)
+         */
         AuthIntroScreen(
             state = authIntroUiState,
             effect = authViewModel.effect,
@@ -50,11 +52,16 @@ fun NavGraphBuilder.authGraph(
             },
             onUserReturned = {
                 authViewModel.onUserReturned()
+            },
+            onRetry = {
+                authViewModel.initScreen()
             }
         )
     }
 
-    // 소셜 회원가입 선택 화면
+    /**
+     * 소셜 회원가입 선택 화면
+     */
     composable(TomoNavRoutes.SignUp) {
         val socialSignUpViewModel: SocialSignUpViewModel = hiltViewModel()
         val uiState by socialSignUpViewModel.uiState.collectAsStateWithLifecycle()
@@ -75,6 +82,9 @@ fun NavGraphBuilder.authGraph(
                 navController.navigate(TomoNavRoutes.MeetingList) {
                     popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
                 }
+            },
+            onRetry = {
+                socialSignUpViewModel.initScreen()
             }
         )
     }

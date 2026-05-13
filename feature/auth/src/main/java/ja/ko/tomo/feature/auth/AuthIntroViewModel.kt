@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ja.ko.tomo.core.ui.util.UiText
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -27,7 +28,23 @@ class AuthIntroViewModel @Inject constructor(
         set(value) = savedStateHandle.set("is_inquiry_pending", value)
 
     init {
-        _uiState.value = AuthIntroUiState.Success()
+        initScreen()
+    }
+
+    /**
+     * 화면 초기화 및 재시도 로직
+     */
+    fun initScreen() {
+        viewModelScope.launch {
+            _uiState.value = AuthIntroUiState.Loading
+            try {
+                // TODO 추후 여기서 서버 공지사항 등을 체크하겠지만,
+                // TODO 현재는 바로 Success로 전환합니다.
+                _uiState.value = AuthIntroUiState.Success()
+            }catch (e: Exception) {
+                handleError(e)
+            }
+        }
     }
 
     fun onSignUpClick() {
@@ -59,5 +76,12 @@ class AuthIntroViewModel @Inject constructor(
                 isInquiryPending = false
             }
         }
+    }
+
+    // 에러 발생시 처리
+    private fun handleError(exception: Exception) {
+        _uiState.value = AuthIntroUiState.Error(
+            message = UiText.DynamicString(exception.localizedMessage ?: "Unknown Error")
+        )
     }
 }

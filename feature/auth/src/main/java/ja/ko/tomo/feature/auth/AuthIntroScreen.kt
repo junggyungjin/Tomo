@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -38,10 +39,14 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import ja.ko.tomo.core.ui.component.SystemBarVisuals
 import ja.ko.tomo.core.ui.component.TomoSnackbar
+import ja.ko.tomo.core.ui.component.TomoStateView
 import ja.ko.tomo.core.ui.component.VideoBackground
 import ja.ko.tomo.core.ui.theme.TomoBlue
+import ja.ko.tomo.core.ui.theme.TomoTheme
+import ja.ko.tomo.core.ui.util.UiText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,7 +59,8 @@ fun AuthIntroScreen(
     onNavigateToSignUp: () -> Unit,
     onNavigateToLogin: () -> Unit,
     onNavigateToInquiry: () -> Unit, // 2. 뷰머델이 UI에 시킴
-    onUserReturned: () -> Unit
+    onUserReturned: () -> Unit,
+    onRetry: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -110,12 +116,20 @@ fun AuthIntroScreen(
         // 기존 UI 레이아웃 호출
         // Box가 전체 화면을 다 써야 하므로 padding을 여기서 적용하지 않거나 적절히 처리합니다.
         Box(modifier = Modifier.padding(padding)) {
-            AuthIntroContent(
-                state = state,
-                onSignUpClick = onSignUpClick,
-                onLoginClick = onLoginClick,
-                onInquiryClick = onInquiryClick
-            )
+            TomoStateView(
+                isLoading = state is AuthIntroUiState.Loading,
+                errorMessage = (state as? AuthIntroUiState.Error)?.message,
+                isSuccess = state is AuthIntroUiState.Success,
+                onRetry = onRetry,
+                modifier = Modifier.padding(padding)
+            ) {
+                AuthIntroContent(
+                    state = state,
+                    onSignUpClick = onSignUpClick,
+                    onLoginClick = onLoginClick,
+                    onInquiryClick = onInquiryClick
+                )
+            }
         }
     }
 }
@@ -201,5 +215,45 @@ private fun AuthIntroContent(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 740, name = "로딩 상태")
+@Composable
+private fun AuthIntroScreenLoadingPreview() {
+    TomoTheme {
+        AuthIntroScreen(
+            state = AuthIntroUiState.Loading, // UPDATED: 로딩 상태 주입
+            effect = emptyFlow(),
+            onSignUpClick = {},
+            onLoginClick = {},
+            onInquiryClick = {},
+            onNavigateToSignUp = {},
+            onNavigateToLogin = {},
+            onNavigateToInquiry = {},
+            onUserReturned = {},
+            onRetry = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 360, heightDp = 740, name = "에러 상태")
+@Composable
+private fun AuthIntroScreenErrorPreview() {
+    TomoTheme {
+        AuthIntroScreen(
+            state = AuthIntroUiState.Error(
+                message = UiText.DynamicString("네트워크 연결이 불안정합니다.")
+            ), // UPDATED: 에러 상태 주입
+            effect = emptyFlow(),
+            onSignUpClick = {},
+            onLoginClick = {},
+            onInquiryClick = {},
+            onNavigateToSignUp = {},
+            onNavigateToLogin = {},
+            onNavigateToInquiry = {},
+            onUserReturned = {},
+            onRetry = {}
+        )
     }
 }
