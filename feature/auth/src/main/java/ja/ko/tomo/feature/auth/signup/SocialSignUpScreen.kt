@@ -77,7 +77,7 @@ fun SocialSignUpScreen(
                 is SocialSignUpUiEffect.ShowSnackbar -> {
                     // 직접 내부 SnackbarHost에 표시
                     val job = launch {
-                        val message = context.getString(uiEffect.resId)
+                        val message = uiEffect.message.asString(context)
                         snackbarHostState.showSnackbar(
                             message = message,
                             duration = SnackbarDuration.Indefinite

@@ -4,6 +4,7 @@
     <string name="auth_intro_login">로그인 하기</string>
     <string name="auth_intro_inquiry">여기로 문의해 주세요</string>
     <string name="auth_intro_inquiry_email_send_completed">문의 메일을 보냈습니다</string>
+    <string name="auth_support_email">jerryaa77@gmail.com</string>
 
     <!-- Social Sign Up ViewModel -->
     <string name="auth_sing_up_empty">회원가입 정보가 없습니다.</string>

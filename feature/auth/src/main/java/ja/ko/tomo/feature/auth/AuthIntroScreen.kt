@@ -48,9 +48,11 @@ import kotlinx.coroutines.launch
 fun AuthIntroScreen(
     state: AuthIntroUiState,
     effect: Flow<AuthIntroUiEffect>,
+    onSignUpClick: () -> Unit,
+    onLoginClick: () -> Unit,
+    onInquiryClick: () -> Unit,
     onNavigateToSignUp: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    onInquiryClick: () -> Unit, // 1. UI가 뷰모델에 알림
     onNavigateToInquiry: () -> Unit, // 2. 뷰머델이 UI에 시킴
     onUserReturned: () -> Unit
 ) {
@@ -75,18 +77,20 @@ fun AuthIntroScreen(
     LaunchedEffect(effect) {
         effect.collect { uiEffect ->
             when (uiEffect) {
+                is AuthIntroUiEffect.NavigateToSignUp -> onNavigateToSignUp()
+                is AuthIntroUiEffect.NavigateToLogin -> onNavigateToLogin()
                 is AuthIntroUiEffect.NavigateToInquiry -> {
                     onNavigateToInquiry()
                 }
                 is AuthIntroUiEffect.ShowSnackbar -> {
-                    val message = context.getString(uiEffect.resId)
+                    val message = uiEffect.message.asString(context)
                     val job = launch {
                         snackbarHostState.showSnackbar(
                             message = message,
                             duration = SnackbarDuration.Indefinite
                         )
                     }
-                    delay(2500)
+                    delay(1500)
                     job.cancel()
                 }
             }
@@ -107,8 +111,9 @@ fun AuthIntroScreen(
         // Box가 전체 화면을 다 써야 하므로 padding을 여기서 적용하지 않거나 적절히 처리합니다.
         Box(modifier = Modifier.padding(padding)) {
             AuthIntroContent(
-                onSignUpClick = onNavigateToSignUp,
-                onLoginClick = onNavigateToLogin,
+                state = state,
+                onSignUpClick = onSignUpClick,
+                onLoginClick = onLoginClick,
                 onInquiryClick = onInquiryClick
             )
         }
@@ -117,6 +122,7 @@ fun AuthIntroScreen(
 
 @Composable
 private fun AuthIntroContent(
+    state: AuthIntroUiState,
     onSignUpClick: () -> Unit,
     onLoginClick: () -> Unit,
     onInquiryClick: () -> Unit
@@ -137,7 +143,7 @@ private fun AuthIntroContent(
 
         // 상단 로고
         Text(
-            text = "Tomo",
+            text = stringResource(R.string.social_signup_logo_text),
             color = Color.White,
             fontSize = 40.sp,
             fontWeight = FontWeight.ExtraBold,
@@ -165,7 +171,8 @@ private fun AuthIntroContent(
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(Color.White),
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(28.dp),
+                enabled = state is AuthIntroUiState.Success
             ) {
                 Text(text = stringResource(R.string.auth_intro_signup), color = TomoBlue, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }

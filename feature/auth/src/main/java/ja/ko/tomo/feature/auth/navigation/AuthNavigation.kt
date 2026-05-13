@@ -11,6 +11,7 @@ import ja.ko.tomo.core.navigation.TomoNavRoutes
 import ja.ko.tomo.core.ui.util.sendInquiryEmail
 import ja.ko.tomo.feature.auth.AuthIntroScreen
 import ja.ko.tomo.feature.auth.AuthIntroViewModel
+import ja.ko.tomo.feature.auth.R
 import ja.ko.tomo.feature.auth.signup.SocialSignUpScreen
 import ja.ko.tomo.feature.auth.signup.SocialSignUpViewModel
 
@@ -26,6 +27,15 @@ fun NavGraphBuilder.authGraph(
         AuthIntroScreen(
             state = authIntroUiState,
             effect = authViewModel.effect,
+            onSignUpClick = {
+                authViewModel.onSignUpClick()
+            },
+            onLoginClick = {
+                authViewModel.onLoginClick()
+            },
+            onInquiryClick = {
+                authViewModel.onInquiryClick()
+            },
             onNavigateToSignUp =  {
                 navController.navigate(TomoNavRoutes.SignUp)
             },
@@ -35,11 +45,8 @@ fun NavGraphBuilder.authGraph(
                     popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
                 }
             },
-            onInquiryClick = {
-                authViewModel.onInquiryClick()
-            },
             onNavigateToInquiry = {
-                context.sendInquiryEmail(to = "jerryaa77@gmail.com")
+                context.sendInquiryEmail(to = context.getString(R.string.auth_support_email))
             },
             onUserReturned = {
                 authViewModel.onUserReturned()

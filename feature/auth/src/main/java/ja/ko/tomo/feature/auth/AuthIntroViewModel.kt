@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ja.ko.tomo.core.ui.util.UiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +26,22 @@ class AuthIntroViewModel @Inject constructor(
         get() = savedStateHandle.get<Boolean>("is_inquiry_pending") ?: false
         set(value) = savedStateHandle.set("is_inquiry_pending", value)
 
+    init {
+        _uiState.value = AuthIntroUiState.Success()
+    }
+
+    fun onSignUpClick() {
+        viewModelScope.launch {
+            _effect.send(AuthIntroUiEffect.NavigateToSignUp)
+        }
+    }
+
+    fun onLoginClick() {
+        viewModelScope.launch {
+            _effect.send(AuthIntroUiEffect.NavigateToLogin)
+        }
+    }
+
     fun onInquiryClick() {
         viewModelScope.launch {
             isInquiryPending = true
@@ -36,7 +53,9 @@ class AuthIntroViewModel @Inject constructor(
     fun onUserReturned() {
         if (isInquiryPending) {
             viewModelScope.launch {
-                _effect.send(AuthIntroUiEffect.ShowSnackbar(R.string.auth_intro_inquiry_email_send_completed))
+                _effect.send(AuthIntroUiEffect.ShowSnackbar(
+                    UiText.StringResource(R.string.auth_intro_inquiry_email_send_completed)
+                ))
                 isInquiryPending = false
             }
         }

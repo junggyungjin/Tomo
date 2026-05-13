@@ -3,6 +3,7 @@ package ja.ko.tomo.feature.auth.signup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ja.ko.tomo.core.ui.util.UiText
 import ja.ko.tomo.domain.model.AuthResult
 import ja.ko.tomo.domain.usecase.auth.SignUpWithSocialUseCase
 import ja.ko.tomo.feature.auth.R
@@ -47,7 +48,7 @@ class SocialSignUpViewModel @Inject constructor(
                             _effect.send(SocialSignUpUiEffect.ShowToast(result.message))
                         }
                         AuthResult.Empty -> {
-                            _effect.send(SocialSignUpUiEffect.ShowSnackbar(R.string.auth_sing_up_empty))
+                            _effect.send(SocialSignUpUiEffect.ShowSnackbar(UiText.StringResource(R.string.auth_sing_up_empty)))
                         }
                     }
                 } finally {
