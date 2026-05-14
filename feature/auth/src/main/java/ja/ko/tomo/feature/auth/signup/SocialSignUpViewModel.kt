@@ -47,20 +47,34 @@ class SocialSignUpViewModel @Inject constructor(
     /**
      * 구글 로그인 성공 후 서버에 회원가입 요청
      */
-    fun signUpWithGoogle(idToken: String) {
+    fun signUpWithGoogle(
+        token: String,
+        providerId: String,
+        name: String?,
+        email: String?
+    ) {
         viewModelScope.launch {
             val currentState = _uiState.value
             if (currentState is SocialSignUpUiState.Success) {
                 _uiState.update { currentState.copy(isSigningUp = true) }
 
                 try {
-                    when (val result = signUpWithSocialUseCase(provider = "google", idToken = idToken)) {
+                    when (val result = signUpWithSocialUseCase(
+                        provider = "google",
+                        token = token,
+                        providerId = providerId,
+                        name = name,
+                        email = email
+                    )
+                    ) {
                         is AuthResult.Success -> {
                             _effect.send(SocialSignUpUiEffect.NavigateToNext)
                         }
+
                         is AuthResult.Error -> {
                             _effect.send(SocialSignUpUiEffect.ShowToast(result.message))
                         }
+
                         AuthResult.Empty -> {
                             _effect.send(SocialSignUpUiEffect.ShowSnackbar(UiText.StringResource(R.string.auth_sing_up_empty)))
                         }
@@ -68,7 +82,7 @@ class SocialSignUpViewModel @Inject constructor(
                 } catch (e: Exception) {
                     // 예상치 못한 시스템 런타임 에러 발생 시 처리
                     // 가입 중에 화면을 아예 에러 뷰로 바꿔버릴지, 아니면 Snackbar를 띄울지 선택
-                  handleError(e)
+                    handleError(e)
                 } finally {
                     _uiState.update {
                         if (it is SocialSignUpUiState.Success) it.copy(isSigningUp = false) else it

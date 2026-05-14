@@ -7,5 +7,11 @@ import javax.inject.Inject
 class SignUpWithSocialUseCase @Inject constructor(
     private val repo: AuthRepository
 ) {
-    suspend operator fun invoke(provider: String, idToken: String): AuthResult = repo.signUpWithSocial(provider, idToken)
+    suspend operator fun invoke(
+        provider: String,
+        token: String,
+        providerId: String,
+        email: String? = null,
+        name: String? = null
+    ): AuthResult = repo.signUpWithSocial(provider, token, providerId, email, name)
 }

@@ -111,7 +111,7 @@ private fun MyPageContent(
 
         // 자기소개 내용
         Text(
-            text = user.introduction,
+            text = user.introduction ?: "",
             fontSize = 16.sp,
             modifier = Modifier.align(Alignment.Start),
             lineHeight = 24.sp

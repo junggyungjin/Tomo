@@ -6,7 +6,9 @@ import kotlinx.serialization.Serializable
 @OptIn(InternalSerializationApi::class)
 @Serializable
 data class SocialSignUpRequest(
-    val provider: String,
-    val idToken: String
+    val token: String,
+    val providerId: String,
+    val email: String? = null,
+    val name: String? = null
 ) {
 }

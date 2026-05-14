@@ -69,8 +69,8 @@ fun NavGraphBuilder.authGraph(
         SocialSignUpScreen(
             state = uiState,
             effect = socialSignUpViewModel.effect,
-            onGoogleSignUpClick = { idToken ->
-                socialSignUpViewModel.signUpWithGoogle(idToken)
+            onGoogleSignUpClick = { token, providerId, name, email ->
+                socialSignUpViewModel.signUpWithGoogle(token, providerId, name, email)
             },
             onBackButtonClick = {
                 socialSignUpViewModel.onBackClick()

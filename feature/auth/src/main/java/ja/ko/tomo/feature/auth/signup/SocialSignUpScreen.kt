@@ -60,7 +60,7 @@ import kotlinx.coroutines.launch
 fun SocialSignUpScreen(
     state: SocialSignUpUiState,
     effect: Flow<SocialSignUpUiEffect>,
-    onGoogleSignUpClick: (String) -> Unit,
+    onGoogleSignUpClick: (token: String, providerId: String, name: String?, email: String?) -> Unit,
     onBackButtonClick: () -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToNext: () -> Unit,
@@ -145,7 +145,12 @@ fun SocialSignUpScreen(
                             val credential = result.credential
 
                             if (credential is GoogleIdTokenCredential) {
-                                onGoogleSignUpClick(credential.idToken)
+                                onGoogleSignUpClick(
+                                    credential.idToken,
+                                    credential.id,
+                                    credential.displayName,
+                                    null
+                                )
                             }
                         }catch (e: Exception) {
                             // 에러 시 스낵바 처리는 유지 (부분 에러이므로)
@@ -264,7 +269,7 @@ private fun SocialSignUpScreenPreview() {
         SocialSignUpScreen(
             state = SocialSignUpUiState.Success(),
             effect = emptyFlow(),
-            onGoogleSignUpClick = {},
+            onGoogleSignUpClick = {_,_,_,_, -> },
             onBackButtonClick = {},
             onNavigateBack = {},
             onNavigateToNext = {},
@@ -280,7 +285,7 @@ private fun SocialSignUpScreenLoadingPreview() {
         SocialSignUpScreen(
             state = SocialSignUpUiState.Success(isSigningUp = true),
             effect = emptyFlow(),
-            onGoogleSignUpClick = {},
+            onGoogleSignUpClick = {_,_,_,_, -> },
             onBackButtonClick = {},
             onNavigateBack = {},
             onNavigateToNext = {},

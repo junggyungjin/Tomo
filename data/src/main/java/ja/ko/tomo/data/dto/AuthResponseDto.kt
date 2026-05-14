@@ -8,5 +8,5 @@ import kotlinx.serialization.Serializable
 data class AuthResponseDto(
     val accessToken: String,
     val refreshToken: String,
-    val user: UserDto
+    val user: UserDto? = null
 )
