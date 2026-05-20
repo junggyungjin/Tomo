@@ -4,8 +4,8 @@ import ja.ko.tomo.data.dto.SocialSignUpRequest
 import ja.ko.tomo.data.mapper.toDomain
 import ja.ko.tomo.data.remote.AuthService
 import ja.ko.tomo.domain.model.AuthResult
-import ja.ko.tomo.domain.model.User
 import ja.ko.tomo.domain.repository.AuthRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -30,27 +30,23 @@ class AuthRepositoryImpl @Inject constructor(
                 )
             )
 
-            // TODO: response.accessToken과 refreshToken을 로컬(EncryptedSharedPreferences 등)에 저장하는 로직이 여기에 추가
-
             // 2. Mapper를 통해 DTO -> Domain 변환 후 성공 결과 반환
-//            AuthResult.Success(response.user.toDomain())
+            if (response.success && response.data != null) {
+                val loginData = response.data
 
-            // 현재 서버가 user 정보를 주지 않으므로,
-            // 1. AuthResponseDto에서 user를 nullable(?)로 바꾸고
-            // 2. 여기서 null 체크를 하거나 빈 객체를 넘겨줘야 합니다.
-            // 예시: 유저 정보가 없어도 일단 성공으로 간주하고 화면을 넘길 경우
-            AuthResult.Success(
-                // 만약 response.user가 null이면 임시 데이터를 생성하거나
-                // 서버 응답 규격(AuthResponseDto)을 먼저 수정해야 합니다.
-                response.user?.toDomain() ?: User(
-                    id = -1L,
-                    email = email ?: "asdf@asdf",
-                    nickname = name ?: "User",
-                    profileImageUrl = null,
-                    introduction = null
-                )
-            )
+                // TODO: response.accessToken과 refreshToken을 로컬(EncryptedSharedPreferences 등)에 저장하는 로직이 여기에 추가
+
+                AuthResult.Success(loginData.user.toDomain())
+            }else {
+                val errorBody = response.error
+                Timber.tag("AuthRepo").e("API 실패: code=${errorBody?.code}, message=${errorBody?.message}")
+
+                AuthResult.Error(response.error?.message ?: "서버 응답 오류가 발생했습니다.")
+            }
+
         }catch (e: Exception) {
+            Timber.tag("AuthRepo").e(e, "소셜 로그인 중 예상치 못한 예외 발생")
+
             AuthResult.Error(e.message ?: "회원가입 중 알 수 없는 에러가 발생했습니다.")
         }
     }

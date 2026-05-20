@@ -1,6 +1,7 @@
 package ja.ko.tomo.data.remote
 
-import ja.ko.tomo.data.dto.AuthResponseDto
+import ja.ko.tomo.data.dto.ApiResponse
+import ja.ko.tomo.data.dto.AuthLoginResponseData
 import ja.ko.tomo.data.dto.SocialSignUpRequest
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -11,5 +12,5 @@ interface AuthService {
     suspend fun signUpWithSocial(
         @Path("provider") provider: String,
         @Body request: SocialSignUpRequest
-    ): AuthResponseDto
+    ): ApiResponse<AuthLoginResponseData>
 }

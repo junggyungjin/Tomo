@@ -10,9 +10,11 @@ class FakeUserRepositoryImpl @Inject constructor() : UserRepository {
     override suspend fun getMyInfo(): UserResult {
         delay(500)
         val user = User(
-            id = 1L,
+            id = "1",
             email = "tomo@gmail.com",
             nickname = "토모 개발자",
+            handle = "",
+            nationality = "",
             profileImageUrl = null,
             introduction = "요로시쿠!"
         )

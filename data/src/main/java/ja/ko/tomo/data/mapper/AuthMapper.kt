@@ -1,13 +1,15 @@
 package ja.ko.tomo.data.mapper
 
-import ja.ko.tomo.data.dto.UserDto
+import ja.ko.tomo.data.dto.AuthUserDto
 import ja.ko.tomo.domain.model.User
 
-fun UserDto.toDomain(): User {
+fun AuthUserDto.toDomain(): User {
     return User(
-        id = id.toLongOrNull() ?: 0L,
-        email = email,
+        id = id,
+        email = "",
         nickname = nickname,
+        handle = handle,
+        nationality = nationality,
         profileImageUrl = null,
         introduction = ""
     )

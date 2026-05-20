@@ -94,7 +94,7 @@ private fun MyPageContent(
 
         // 이메일
         Text(
-            text = user.email,
+            text = user.email ?: "asdf@asdfqw",
             fontSize = 16.sp,
             color = DarkGray
         )
@@ -125,9 +125,11 @@ fun MyPageContentPreview() {
     TomoTheme{
         MyPageContent(
             user = User(
-                id = 1L,
+                id = "1",
                 email = "asdf@asdf",
                 nickname = "개발자",
+                handle = null,
+                nationality = null,
                 profileImageUrl = null,
                 introduction = "hihi"
             )

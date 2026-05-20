@@ -6,11 +6,13 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ja.ko.tomo.data.remote.AuthService
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import timber.log.Timber
 import javax.inject.Singleton
 
 @Module
@@ -29,8 +31,25 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
+        val logger = HttpLoggingInterceptor.Logger { message ->
+            if (!message.startsWith("{") && !message.startsWith("[")) {
+                Timber.tag("OkHttp").d(message)
+                return@Logger
+            }
+
+            try {
+                val prettyJson = Json { prettyPrint = true }
+                val jsonElement = prettyJson.parseToJsonElement(message)
+                val formattedJson = prettyJson.encodeToString(JsonElement.serializer(), jsonElement)
+
+                Timber.tag("OkHttp").d("\n$formattedJson")
+            }catch (e: Exception) {
+                Timber.tag("OkHttp").d(message)
+            }
+        }
+
         return OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().apply {
+            .addInterceptor(HttpLoggingInterceptor(logger).apply {
                 level = HttpLoggingInterceptor.Level.BODY // 개발 단계에선 로그 전체 확인
             })
             .build()
