@@ -60,7 +60,7 @@ import kotlinx.coroutines.launch
 fun SocialSignUpScreen(
     state: SocialSignUpUiState,
     effect: Flow<SocialSignUpUiEffect>,
-    onGoogleSignUpClick: (token: String, providerId: String, name: String?, email: String?) -> Unit,
+    onGoogleSignUpClick: (token: String, providerId: String, email: String?, name: String?) -> Unit,
     onBackButtonClick: () -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToNext: () -> Unit,
@@ -147,8 +147,8 @@ fun SocialSignUpScreen(
                             if (credential is GoogleIdTokenCredential) {
                                 onGoogleSignUpClick(
                                     credential.idToken,
-                                    credential.id,
-                                    credential.displayName,
+                                    credential.uniqueId,
+                                    null,
                                     null
                                 )
                             }

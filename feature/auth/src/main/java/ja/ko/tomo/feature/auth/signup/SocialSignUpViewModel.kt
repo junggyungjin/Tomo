@@ -50,8 +50,8 @@ class SocialSignUpViewModel @Inject constructor(
     fun signUpWithGoogle(
         token: String,
         providerId: String,
-        name: String?,
-        email: String?
+        email: String?,
+        name: String?
     ) {
         viewModelScope.launch {
             val currentState = _uiState.value
@@ -63,8 +63,8 @@ class SocialSignUpViewModel @Inject constructor(
                         provider = "google",
                         token = token,
                         providerId = providerId,
-                        name = name,
-                        email = email
+                        email = email,
+                        name = name
                     )
                     ) {
                         is AuthResult.Success -> {
