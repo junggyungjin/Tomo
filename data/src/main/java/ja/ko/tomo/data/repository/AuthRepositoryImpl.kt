@@ -1,6 +1,6 @@
 package ja.ko.tomo.data.repository
 
-import ja.ko.tomo.data.dto.SocialSignUpRequest
+import ja.ko.tomo.data.dto.request.SocialSignUpRequest
 import ja.ko.tomo.data.mapper.toDomain
 import ja.ko.tomo.data.remote.AuthService
 import ja.ko.tomo.domain.model.AuthResult

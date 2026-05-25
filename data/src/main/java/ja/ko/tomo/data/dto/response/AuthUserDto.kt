@@ -1,4 +1,4 @@
-package ja.ko.tomo.data.dto
+package ja.ko.tomo.data.dto.response
 
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
