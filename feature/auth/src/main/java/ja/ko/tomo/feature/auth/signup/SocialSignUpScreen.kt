@@ -63,7 +63,7 @@ fun SocialSignUpScreen(
     onGoogleSignUpClick: (token: String, providerId: String, email: String?, name: String?) -> Unit,
     onBackButtonClick: () -> Unit,
     onNavigateBack: () -> Unit,
-    onNavigateToNext: () -> Unit,
+    onNavigateToNext: (String) -> Unit,
     onRetry: () -> Unit
 ) {
     val context = LocalContext.current
@@ -74,7 +74,9 @@ fun SocialSignUpScreen(
     LaunchedEffect(effect) {
         effect.collect { uiEffect ->
             when (uiEffect) {
-                is SocialSignUpUiEffect.NavigateToNext -> onNavigateToNext()
+                is SocialSignUpUiEffect.NavigateToProfileSetup -> {
+                    onNavigateToNext(uiEffect.userId)
+                }
                 is SocialSignUpUiEffect.NavigateBack -> onNavigateBack()
                 is SocialSignUpUiEffect.ShowSnackbar -> {
                     // 직접 내부 SnackbarHost에 표시

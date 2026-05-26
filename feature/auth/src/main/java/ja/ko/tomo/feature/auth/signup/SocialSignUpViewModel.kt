@@ -68,7 +68,7 @@ class SocialSignUpViewModel @Inject constructor(
                     )
                     ) {
                         is AuthResult.Success -> {
-                            _effect.send(SocialSignUpUiEffect.NavigateToNext)
+                            _effect.send(SocialSignUpUiEffect.NavigateToProfileSetup(result.user.id))
                         }
 
                         is AuthResult.Error -> {

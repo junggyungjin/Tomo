@@ -12,6 +12,8 @@ import ja.ko.tomo.core.ui.util.sendInquiryEmail
 import ja.ko.tomo.feature.auth.AuthIntroScreen
 import ja.ko.tomo.feature.auth.AuthIntroViewModel
 import ja.ko.tomo.feature.auth.R
+import ja.ko.tomo.feature.auth.onboading.ProfileSetupScreen
+import ja.ko.tomo.feature.auth.onboading.ProfileSetupViewModel
 import ja.ko.tomo.feature.auth.signup.SocialSignUpScreen
 import ja.ko.tomo.feature.auth.signup.SocialSignUpViewModel
 
@@ -78,14 +80,41 @@ fun NavGraphBuilder.authGraph(
             onNavigateBack = {
                 navController.popBackStack()
             },
-            onNavigateToNext = {
-                navController.navigate(TomoNavRoutes.MeetingList) {
-                    popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
-                }
+            onNavigateToNext = { userId -> // ViewModel에서 전달받은 userId
+                navController.navigate(TomoNavRoutes.profileSetupRoute(userId))
             },
             onRetry = {
                 socialSignUpViewModel.initScreen()
             }
+        )
+    }
+
+    /**
+     * 프로필 설정 화면 (Onboarding)
+     */
+    composable(
+        route = "${TomoNavRoutes.ProfileSetUp}/{userId}"
+    ) { backStackEntry ->
+        val userId = backStackEntry.arguments?.getString("userId") ?: ""
+        val viewModel: ProfileSetupViewModel = hiltViewModel()
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+        ProfileSetupScreen(
+            userId = userId,
+            state = uiState,
+            effect = viewModel.effect,
+            onNicknameChange = viewModel::onNicknameChange,
+            onGenderSelect = viewModel::onGenderSelect,
+            onNationalitySelect = viewModel::onNationalitySelect,
+            onImageSelected = viewModel::onImageSelected,
+            onCompleteClick = { viewModel.onCompleteClick(userId)},
+            onNavigateToHome = {
+                navController.navigate(TomoNavRoutes.MeetingList) {
+                    popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
+                }
+            },
+            onBackClick = { navController.popBackStack()},
+            onRetry = viewModel::initScreen
         )
     }
 }

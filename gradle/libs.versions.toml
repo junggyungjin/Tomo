@@ -35,6 +35,8 @@ kotlinxSerialization = "1.7.3"
 # SocialLogin
 androidxCredentials = "1.2.2"
 googleid = "1.1.1"
+# coil
+coil = "2.7.0"
 
 [libraries]
 # Core
@@ -88,6 +90,8 @@ kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref 
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidxCredentials" }
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidxCredentials" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+# UI Image Loading
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

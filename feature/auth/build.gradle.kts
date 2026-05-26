@@ -62,6 +62,9 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
 
+    // Image Loading
+    implementation(libs.coil.compose)
+
     // SocialLogin
     // 1. Google
     implementation(libs.androidx.credentials)

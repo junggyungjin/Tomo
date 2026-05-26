@@ -1,5 +1,6 @@
 package ja.ko.tomo.data.repository
 
+import ja.ko.tomo.domain.model.Gender
 import ja.ko.tomo.domain.model.User
 import ja.ko.tomo.domain.model.UserResult
 import ja.ko.tomo.domain.repository.UserRepository
@@ -19,6 +20,16 @@ class FakeUserRepositoryImpl @Inject constructor() : UserRepository {
             introduction = "요로시쿠!"
         )
         return UserResult.Success(user = user)
+    }
+
+    override suspend fun updateUserProfile(
+        userId: String,
+        nickname: String,
+        nationality: String,
+        gender: Gender,
+        profileImageUrl: String?
+    ): UserResult {
+        TODO("Not yet implemented")
     }
 
 }

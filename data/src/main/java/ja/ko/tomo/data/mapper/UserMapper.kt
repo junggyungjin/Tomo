@@ -5,9 +5,9 @@ import ja.ko.tomo.domain.model.User
 
 fun UpdateUserProfileResponseDto.toDomain(): User {
     return User(
-        id = this.id,
-        nickname = this.nickname,
-        nationality = this.nationality,
+        id = id,
+        nickname = nickname,
+        nationality = nationality,
         email = null,
         handle = null,
         profileImageUrl = null,

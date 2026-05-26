@@ -7,9 +7,9 @@ fun AuthUserDto.toDomain(): User {
     return User(
         id = id,
         email = "",
-        nickname = nickname,
+        nickname = null,
         handle = handle,
-        nationality = nationality,
+        nationality = null,
         profileImageUrl = null,
         introduction = ""
     )

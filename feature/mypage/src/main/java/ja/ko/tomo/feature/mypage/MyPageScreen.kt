@@ -84,13 +84,15 @@ private fun MyPageContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         // 닉네임
-        Text(
-            text = user.nickname,
-            fontSize = 28.sp,
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.ExtraBold
+        user.nickname?.let {
+            Text(
+                text = it,
+                fontSize = 28.sp,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.ExtraBold
+                )
             )
-        )
+        }
 
         // 이메일
         Text(

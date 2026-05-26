@@ -1,4 +1,6 @@
 <resources>
+    <string name="google_web_client_id">831538870114-nam04ognooopgklj36fspsgak85mt7ur.apps.googleusercontent.com</string>
+
     <!-- AuthIntro -->
     <string name="auth_intro_signup">회원가입 하기</string>
     <string name="auth_intro_login">로그인 하기</string>
@@ -19,5 +21,15 @@
     <!-- Error Messages -->
     <string name="auth_error_google_login">구글 로그인 실패: %1$s</string>
 
-    <string name="google_web_client_id">831538870114-nam04ognooopgklj36fspsgak85mt7ur.apps.googleusercontent.com</string>
+    <!-- Profile Setup -->
+    <string name="profile_setup_intro">거의 다 됐어요!\n프로필을 완성해 주세요.</string>
+    <string name="profile_setup_nickname_label">닉네임</string>
+    <string name="profile_setup_nickname_placeholder">2~20자</string>
+    <string name="profile_setup_gender_label">성별</string>
+    <string name="profile_setup_gender_male">남성</string>
+    <string name="profile_setup_gender_female">여성</string>
+    <string name="profile_setup_nationality_label">국적</string>
+    <string name="profile_setup_nationality_placeholder">예: KR, US</string>
+    <string name="profile_setup_complete_button">가입 완료</string>
+    <string name="profile_setup_error_nickname_too_short">닉네임은 2자 이상이어야 합니다.</string>
 </resources>

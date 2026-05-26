@@ -2,14 +2,17 @@ package ja.ko.tomo.core.navigation
 
 object TomoNavRoutes {
     const val AuthIntro = "auth_intro" // 로그인/회원가입 선택 화면
-    const val Login = "login"           // 실제 로그인 입력 화면
     const val SignUp = "sign_up"         // 회원가입 입력 화면
+    const val Login = "login"           // 실제 로그인 입력 화면
+    const val ProfileSetUp = "profile_setup" // 프로필 설정 화면
     const val MeetingList = "meeting_list"
     const val MeetingDetail = "meeting_detail"
     const val MeetingCreate = "meeting_create"
     const val MyPage = "my_page"
     const val ChatList = "chat_list"
     const val ChatRoom = "chat_room"
+
+    fun profileSetupRoute(userId: String) = "$ProfileSetUp/$userId"
 
     fun meetingDetailRoute(meetingId: Long): String {
         return "$MeetingDetail/$meetingId"
