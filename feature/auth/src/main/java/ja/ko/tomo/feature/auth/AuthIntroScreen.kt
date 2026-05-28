@@ -43,6 +43,7 @@ import ja.ko.tomo.core.ui.component.TomoStateView
 import ja.ko.tomo.core.ui.component.VideoBackground
 import ja.ko.tomo.core.ui.theme.TomoBlue
 import ja.ko.tomo.core.ui.theme.TomoTheme
+import ja.ko.tomo.core.ui.theme.White
 import ja.ko.tomo.core.ui.util.UiText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -54,10 +55,8 @@ fun AuthIntroScreen(
     state: AuthIntroUiState,
     effect: Flow<AuthIntroUiEffect>,
     onSignUpClick: () -> Unit,
-    onLoginClick: () -> Unit,
     onInquiryClick: () -> Unit,
     onNavigateToSignUp: () -> Unit,
-    onNavigateToLogin: () -> Unit,
     onNavigateToInquiry: () -> Unit, // 2. 뷰머델이 UI에 시킴
     onUserReturned: () -> Unit,
     onRetry: () -> Unit
@@ -84,7 +83,6 @@ fun AuthIntroScreen(
         effect.collect { uiEffect ->
             when (uiEffect) {
                 is AuthIntroUiEffect.NavigateToSignUp -> onNavigateToSignUp()
-                is AuthIntroUiEffect.NavigateToLogin -> onNavigateToLogin()
                 is AuthIntroUiEffect.NavigateToInquiry -> {
                     onNavigateToInquiry()
                 }
@@ -126,7 +124,6 @@ fun AuthIntroScreen(
                 AuthIntroContent(
                     state = state,
                     onSignUpClick = onSignUpClick,
-                    onLoginClick = onLoginClick,
                     onInquiryClick = onInquiryClick
                 )
             }
@@ -138,7 +135,6 @@ fun AuthIntroScreen(
 private fun AuthIntroContent(
     state: AuthIntroUiState,
     onSignUpClick: () -> Unit,
-    onLoginClick: () -> Unit,
     onInquiryClick: () -> Unit
 ) {
     Box(
@@ -183,25 +179,13 @@ private fun AuthIntroContent(
                 onClick = onSignUpClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(Color.White),
-                shape = RoundedCornerShape(28.dp),
-                enabled = state is AuthIntroUiState.Success
-            ) {
-                Text(text = stringResource(R.string.auth_intro_signup), color = TomoBlue, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            }
-
-            // 로그인버튼
-            Button(
-                onClick = onLoginClick,
-                modifier = Modifier
-                    .fillMaxWidth()
                     .height(56.dp)
                     .border(1.dp, Color.White, RoundedCornerShape(28.dp)),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(28.dp),
+                enabled = state is AuthIntroUiState.Success
             ) {
-                Text(text = stringResource(R.string.auth_intro_login), color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.auth_intro_login), color = White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -226,10 +210,8 @@ private fun AuthIntroScreenLoadingPreview() {
             state = AuthIntroUiState.Loading, // UPDATED: 로딩 상태 주입
             effect = emptyFlow(),
             onSignUpClick = {},
-            onLoginClick = {},
             onInquiryClick = {},
             onNavigateToSignUp = {},
-            onNavigateToLogin = {},
             onNavigateToInquiry = {},
             onUserReturned = {},
             onRetry = {}
@@ -247,10 +229,8 @@ private fun AuthIntroScreenErrorPreview() {
             ), // UPDATED: 에러 상태 주입
             effect = emptyFlow(),
             onSignUpClick = {},
-            onLoginClick = {},
             onInquiryClick = {},
             onNavigateToSignUp = {},
-            onNavigateToLogin = {},
             onNavigateToInquiry = {},
             onUserReturned = {},
             onRetry = {}

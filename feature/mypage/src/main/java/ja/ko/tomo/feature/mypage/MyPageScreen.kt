@@ -133,6 +133,7 @@ fun MyPageContentPreview() {
                 handle = null,
                 nationality = null,
                 profileImageUrl = null,
+                status = "ACTIVE",
                 introduction = "hihi"
             )
         )

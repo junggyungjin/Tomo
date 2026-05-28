@@ -17,6 +17,7 @@ class FakeUserRepositoryImpl @Inject constructor() : UserRepository {
             handle = "",
             nationality = "",
             profileImageUrl = null,
+            status = "ACTIVE",
             introduction = "요로시쿠!"
         )
         return UserResult.Success(user = user)

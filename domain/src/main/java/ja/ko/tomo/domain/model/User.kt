@@ -7,5 +7,6 @@ data class User(
     val handle: String?,
     val nationality: String?,
     val profileImageUrl: String?,
+    val status: String,
     val introduction: String?
 )

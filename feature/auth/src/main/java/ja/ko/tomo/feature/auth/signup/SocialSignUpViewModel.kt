@@ -68,11 +68,28 @@ class SocialSignUpViewModel @Inject constructor(
                     )
                     ) {
                         is AuthResult.Success -> {
-                            _effect.send(SocialSignUpUiEffect.NavigateToProfileSetup(result.user.id))
+                            val userStatus = result.user.status
+                            when (userStatus) {
+                                "ACTIVE" -> {
+                                    // 프로필 설정 완료 상태 -> 홈으로 보내면 됨
+                                    _effect.send(SocialSignUpUiEffect.NavigateToHome)
+                                }
+                                "PENDING" -> {
+                                    // 프로필 설정이 필요한 상태 -> 프로필 설정 화면으로 보내면 됨
+                                    _effect.send(SocialSignUpUiEffect.NavigateToProfileSetup(result.user.id))
+                                }
+                                else -> {
+                                    // TODO BANNED, DELETE 기획되면 나중에 구현
+                                }
+                            }
                         }
 
                         is AuthResult.Error -> {
-                            _effect.send(SocialSignUpUiEffect.ShowToast(result.message))
+                            _effect.send(
+                                SocialSignUpUiEffect.ShowToast(
+                                    message = UiText.DynamicString(result.message)
+                                )
+                            )
                         }
 
                         AuthResult.Empty -> {

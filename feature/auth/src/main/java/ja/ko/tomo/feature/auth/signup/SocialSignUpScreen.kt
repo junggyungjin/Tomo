@@ -1,5 +1,6 @@
 package ja.ko.tomo.feature.auth.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -63,6 +65,7 @@ fun SocialSignUpScreen(
     onGoogleSignUpClick: (token: String, providerId: String, email: String?, name: String?) -> Unit,
     onBackButtonClick: () -> Unit,
     onNavigateBack: () -> Unit,
+    onNavigateToHome: () -> Unit,
     onNavigateToNext: (String) -> Unit,
     onRetry: () -> Unit
 ) {
@@ -74,6 +77,9 @@ fun SocialSignUpScreen(
     LaunchedEffect(effect) {
         effect.collect { uiEffect ->
             when (uiEffect) {
+                is SocialSignUpUiEffect.NavigateToHome -> {
+                    onNavigateToHome()
+                }
                 is SocialSignUpUiEffect.NavigateToProfileSetup -> {
                     onNavigateToNext(uiEffect.userId)
                 }
@@ -90,6 +96,10 @@ fun SocialSignUpScreen(
                     delay(500)
                     job.cancel()
                 }
+                is SocialSignUpUiEffect.ShowToast -> {
+                    val message = uiEffect.message.asString(context)
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
                 else -> {}
             }
         }
@@ -102,7 +112,7 @@ fun SocialSignUpScreen(
             }
         },
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         text = stringResource(R.string.social_signup_title),
@@ -271,9 +281,10 @@ private fun SocialSignUpScreenPreview() {
         SocialSignUpScreen(
             state = SocialSignUpUiState.Success(),
             effect = emptyFlow(),
-            onGoogleSignUpClick = {_,_,_,_, -> },
+            onGoogleSignUpClick = { _, _, _, _ -> },
             onBackButtonClick = {},
             onNavigateBack = {},
+            onNavigateToHome = {},
             onNavigateToNext = {},
             onRetry = {}
         )
@@ -287,9 +298,10 @@ private fun SocialSignUpScreenLoadingPreview() {
         SocialSignUpScreen(
             state = SocialSignUpUiState.Success(isSigningUp = true),
             effect = emptyFlow(),
-            onGoogleSignUpClick = {_,_,_,_, -> },
+            onGoogleSignUpClick = { _, _, _, _ -> },
             onBackButtonClick = {},
             onNavigateBack = {},
+            onNavigateToHome = {},
             onNavigateToNext = {},
             onRetry = {}
         )

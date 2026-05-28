@@ -53,12 +53,6 @@ class AuthIntroViewModel @Inject constructor(
         }
     }
 
-    fun onLoginClick() {
-        viewModelScope.launch {
-            _effect.send(AuthIntroUiEffect.NavigateToLogin)
-        }
-    }
-
     fun onInquiryClick() {
         viewModelScope.launch {
             isInquiryPending = true

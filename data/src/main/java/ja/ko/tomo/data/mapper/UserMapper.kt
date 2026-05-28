@@ -9,8 +9,9 @@ fun UpdateUserProfileResponseDto.toDomain(): User {
         nickname = nickname,
         nationality = nationality,
         email = null,
-        handle = null,
-        profileImageUrl = null,
+        handle = handle,
+        profileImageUrl = profileImageUrl,
+        status = status,
         introduction = null
     )
 }

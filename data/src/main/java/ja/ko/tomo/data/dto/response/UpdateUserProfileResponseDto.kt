@@ -8,6 +8,9 @@ import kotlinx.serialization.Serializable
 data class UpdateUserProfileResponseDto(
     val id: String,
     val nickname: String,
-    val nationality: String
+    val handle: String,
+    val nationality: String,
+    val profileImageUrl: String?,
+    val status: String
 ) {
 }

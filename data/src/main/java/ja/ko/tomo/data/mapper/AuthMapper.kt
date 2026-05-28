@@ -11,6 +11,7 @@ fun AuthUserDto.toDomain(): User {
         handle = handle,
         nationality = null,
         profileImageUrl = null,
+        status = status,
         introduction = ""
     )
 }

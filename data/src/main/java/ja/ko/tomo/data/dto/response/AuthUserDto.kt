@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class AuthUserDto(
     val id: String,
     val handle: String,
+    val status: String
 )
 
 @OptIn(InternalSerializationApi::class)

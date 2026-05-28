@@ -34,20 +34,11 @@ fun NavGraphBuilder.authGraph(
             onSignUpClick = {
                 authViewModel.onSignUpClick()
             },
-            onLoginClick = {
-                authViewModel.onLoginClick()
-            },
             onInquiryClick = {
                 authViewModel.onInquiryClick()
             },
             onNavigateToSignUp =  {
                 navController.navigate(TomoNavRoutes.SignUp)
-            },
-            onNavigateToLogin = {
-                // TODO 로그인 api 만들고나서 실제 구현
-                navController.navigate(TomoNavRoutes.MeetingList) {
-                    popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
-                }
             },
             onNavigateToInquiry = {
                 context.sendInquiryEmail(to = context.getString(R.string.auth_support_email))
@@ -79,6 +70,11 @@ fun NavGraphBuilder.authGraph(
             },
             onNavigateBack = {
                 navController.popBackStack()
+            },
+            onNavigateToHome = {
+                navController.navigate(TomoNavRoutes.MeetingList) {
+                    popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
+                }
             },
             onNavigateToNext = { userId -> // ViewModel에서 전달받은 userId
                 navController.navigate(TomoNavRoutes.profileSetupRoute(userId))
