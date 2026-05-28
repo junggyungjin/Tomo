@@ -10,4 +10,6 @@ interface AuthRepository {
         email: String?,
         name: String?
     ): AuthResult
+
+    suspend fun isLoggedIn(): Boolean
 }

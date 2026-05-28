@@ -1,5 +1,8 @@
 package ja.ko.tomo
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,15 +14,24 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import ja.ko.tomo.core.navigation.TomoNavRoutes
 import ja.ko.tomo.core.navigation.bottomNavItem
 import ja.ko.tomo.core.ui.theme.TomoTheme
+import ja.ko.tomo.core.ui.util.DoubleBackToExitHandler
+import ja.ko.tomo.core.ui.util.UiText
 import ja.ko.tomo.feature.auth.navigation.authGraph
 import ja.ko.tomo.feature.chat.navigation.chatGraph
 import ja.ko.tomo.feature.meeting.navigation.meetingGraph
@@ -28,13 +40,17 @@ import ja.ko.tomo.feature.mypage.navigation.myPageGraph
 
 @Composable
 fun TomoApp(
-    appState: TomoAppState = rememberTomoAppState()
+    appState: TomoAppState = rememberTomoAppState(),
+    mainViewModel: MainViewModel = hiltViewModel()
 ) {
-    TomoTheme {
-        // 현업 팁: 실제로는 여기서 viewModel을 통해 '로그인 여부'를 판단하여
-        // startDestination을 결정합니다. 지금은 임시로 AuthIntro를 시작점으로 잡습니다.
-        val startDestination = TomoNavRoutes.AuthIntro
+    // ViewModel에서 결정된 시작점을 구독
+    val startDestination by mainViewModel.startDestination.collectAsStateWithLifecycle()
+    // 뒤로 가기 스택이 없을때만 뒤로가기 두번 눌렀을때 앱 종료
+    DoubleBackToExitHandler(
+        enabled = appState.navController.previousBackStackEntry == null
+    )
 
+    TomoTheme {
         Scaffold(
             bottomBar = {
                 if (appState.shouldShowBottomBar) {
