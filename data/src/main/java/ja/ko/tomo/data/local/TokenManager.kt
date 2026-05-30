@@ -16,6 +16,8 @@ class TokenManager @Inject constructor(private val dataStore: DataStore<Preferen
 
     val accessToken: Flow<String?> = dataStore.data.map { it[ACCESS_TOKEN_KEY] }
 
+    val refreshToken: Flow<String?> = dataStore.data.map { it[REFRESH_TOKEN_KEY] }
+
     suspend fun saveTokens(access: String, refresh: String) {
         dataStore.edit { preferences ->
             preferences[ACCESS_TOKEN_KEY] = access

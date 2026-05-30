@@ -65,4 +65,8 @@ class AuthRepositoryImpl @Inject constructor(
         tokenManager.accessToken.firstOrNull()?.let { token = it }
         return !token.isNullOrBlank()
     }
+
+    override suspend fun logout() {
+        tokenManager.clearTokens()
+    }
 }

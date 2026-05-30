@@ -14,6 +14,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import ja.ko.tomo.core.navigation.bottomNavItem
 import ja.ko.tomo.core.ui.theme.TomoTheme
 import ja.ko.tomo.core.ui.util.DoubleBackToExitHandler
 import ja.ko.tomo.core.ui.util.UiText
+import ja.ko.tomo.data.local.AuthEvent
 import ja.ko.tomo.feature.auth.navigation.authGraph
 import ja.ko.tomo.feature.chat.navigation.chatGraph
 import ja.ko.tomo.feature.meeting.navigation.meetingGraph
@@ -43,8 +45,26 @@ fun TomoApp(
     appState: TomoAppState = rememberTomoAppState(),
     mainViewModel: MainViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     // ViewModel에서 결정된 시작점을 구독
     val startDestination by mainViewModel.startDestination.collectAsStateWithLifecycle()
+
+    // 전역 세션 만료 이벤트 처리
+    LaunchedEffect(Unit) {
+        mainViewModel.authEvent.collect { event ->
+            when (event) {
+                is AuthEvent.SessionExpired -> {
+                    mainViewModel.logout()
+                    Toast.makeText(context, "세션이 만료되었습니다. 다시 로그인해주세요.", Toast.LENGTH_SHORT).show()
+                    // 모든 스택을 제거하고 로그인 화면으로 이동
+                    appState.navController.navigate(TomoNavRoutes.AuthIntro) {
+                        popUpTo(0) { inclusive = true}
+                    }
+                }
+            }
+        }
+    }
+
     // 뒤로 가기 스택이 없을때만 뒤로가기 두번 눌렀을때 앱 종료
     DoubleBackToExitHandler(
         enabled = appState.navController.previousBackStackEntry == null

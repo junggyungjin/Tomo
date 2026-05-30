@@ -4,6 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ja.ko.tomo.data.remote.AuthAuthenticator
+import ja.ko.tomo.data.remote.AuthInterceptor
 import ja.ko.tomo.data.remote.AuthService
 import ja.ko.tomo.data.remote.UserApiService
 import kotlinx.serialization.json.Json
@@ -31,7 +33,10 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor,
+        authAuthenticator: AuthAuthenticator
+    ): OkHttpClient {
         val logger = HttpLoggingInterceptor.Logger { message ->
             if (!message.startsWith("{") && !message.startsWith("[")) {
                 Timber.tag("OkHttp").d(message)
@@ -53,6 +58,8 @@ object NetworkModule {
             .addInterceptor(HttpLoggingInterceptor(logger).apply {
                 level = HttpLoggingInterceptor.Level.BODY // 개발 단계에선 로그 전체 확인
             })
+            .addInterceptor(authInterceptor)
+            .authenticator(authAuthenticator)
             .build()
     }
 

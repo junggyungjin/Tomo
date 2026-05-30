@@ -12,8 +12,23 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val userApiService: UserApiService
 ): UserRepository {
+    // 내 정보 조회
     override suspend fun getMyInfo(): UserResult {
-        TODO("Not yet implemented")
+        return try {
+            val response = userApiService.getMyInfo()
+
+            if (response.success && response.data != null) {
+                UserResult.Success(response.data.toDomain())
+            } else {
+                val errorBody = response.error
+                Timber.tag("UserRepo").e("내 정보 조회 실패: code=${errorBody?.code}, message=${errorBody?.message}")
+                UserResult.Error(response.error?.message ?: "내 정보를 가져오는데 실패했습니다")
+            }
+
+        }catch (e: Exception) {
+            Timber.tag("UserRepo").e(e, "내 정보 조회 중 예외 발생")
+            UserResult.Error(e.message ?: "알 수 업슨ㄴ 에러가 발생했습니다.")
+        }
     }
 
     override suspend fun updateUserProfile(
