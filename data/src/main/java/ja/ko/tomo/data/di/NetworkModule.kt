@@ -7,6 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import ja.ko.tomo.data.remote.AuthAuthenticator
 import ja.ko.tomo.data.remote.AuthInterceptor
 import ja.ko.tomo.data.remote.AuthService
+import ja.ko.tomo.data.remote.FeedApiService
 import ja.ko.tomo.data.remote.UserApiService
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -83,5 +84,11 @@ object NetworkModule {
     @Singleton
     fun provideUserService(retrofit: Retrofit): UserApiService {
         return retrofit.create(UserApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFeedApiService(retrofit: Retrofit): FeedApiService {
+        return retrofit.create(FeedApiService::class.java)
     }
 }

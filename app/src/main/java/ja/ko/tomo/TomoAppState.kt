@@ -27,11 +27,11 @@ class TomoAppState(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    // 하단 바를 보여줘야 할 화면인지 판단하는 로직을 일로 옮깁니다.
+    // 하단 바를 보여줘야 할 화면인지 판단하는 로직
     val shouldShowBottomBar: Boolean
         @Composable get() = currentDestination?.route in bottomNavItem.map { it.route }
 
-    // 하단 바 클릭 시 이동 로직도 캡슐화합니다
+    // 하단 바 클릭 시 이동 로직도 캡슐화
     fun navigateToTopLevelDestination(route: String) {
         navController.navigate(route) {
             popUpTo(navController.graph.startDestinationId) {

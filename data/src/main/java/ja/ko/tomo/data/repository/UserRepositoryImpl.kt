@@ -27,7 +27,7 @@ class UserRepositoryImpl @Inject constructor(
 
         }catch (e: Exception) {
             Timber.tag("UserRepo").e(e, "내 정보 조회 중 예외 발생")
-            UserResult.Error(e.message ?: "알 수 업슨ㄴ 에러가 발생했습니다.")
+            UserResult.Error(e.message ?: "알 수 없는 에러가 발생했습니다.")
         }
     }
 

@@ -8,7 +8,9 @@ import ja.ko.tomo.data.repository.AuthRepositoryImpl
 import ja.ko.tomo.data.repository.FakeChatRepositoryImpl
 import ja.ko.tomo.data.repository.FakeMeetingRepositoryImpl
 import ja.ko.tomo.data.repository.FakeUserRepositoryImpl
+import ja.ko.tomo.data.repository.FeedRepositoryImpl
 import ja.ko.tomo.data.repository.UserRepositoryImpl
+import ja.ko.tomo.domain.feed.repository.FeedRepository
 import ja.ko.tomo.domain.repository.AuthRepository
 import ja.ko.tomo.domain.repository.ChatRepository
 import ja.ko.tomo.domain.repository.MeetingRepository
@@ -42,4 +44,10 @@ abstract class RepositoryModule {
     abstract fun bindAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFeedRepository(
+        feedRepositoryImpl: FeedRepositoryImpl
+    ): FeedRepository
 }

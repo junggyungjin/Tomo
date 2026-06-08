@@ -72,7 +72,7 @@ fun NavGraphBuilder.authGraph(
                 navController.popBackStack()
             },
             onNavigateToHome = {
-                navController.navigate(TomoNavRoutes.MeetingList) {
+                navController.navigate(TomoNavRoutes.FeedList) {
                     popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
                 }
             },
@@ -105,7 +105,7 @@ fun NavGraphBuilder.authGraph(
             onImageSelected = viewModel::onImageSelected,
             onCompleteClick = { viewModel.onCompleteClick(userId)},
             onNavigateToHome = {
-                navController.navigate(TomoNavRoutes.MeetingList) {
+                navController.navigate(TomoNavRoutes.FeedList) {
                     popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
                 }
             },

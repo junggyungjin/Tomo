@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- FeedViewModel -->
+    <string name="feed_enter_call_room">통화방(ID: %1$s)에 입장합니다.</string>
+
+</resources>

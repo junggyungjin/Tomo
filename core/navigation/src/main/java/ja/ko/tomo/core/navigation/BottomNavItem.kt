@@ -14,7 +14,7 @@ data class BottomNavItem(
 )
 
 val bottomNavItem = listOf(
-    BottomNavItem(R.string.nav_meeting, TomoNavRoutes.MeetingList, Icons.Default.Groups),
+    BottomNavItem(R.string.nav_feed, TomoNavRoutes.FeedList, Icons.Default.Groups),
     BottomNavItem(R.string.nav_chat, TomoNavRoutes.ChatList, Icons.Default.ChatBubble),
     BottomNavItem(R.string.nav_mypage, TomoNavRoutes.MyPage, Icons.Default.Person)
 )

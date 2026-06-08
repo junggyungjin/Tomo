@@ -36,6 +36,7 @@ import ja.ko.tomo.core.ui.util.UiText
 import ja.ko.tomo.data.local.AuthEvent
 import ja.ko.tomo.feature.auth.navigation.authGraph
 import ja.ko.tomo.feature.chat.navigation.chatGraph
+import ja.ko.tomo.feature.feed.navigation.feedGraph
 import ja.ko.tomo.feature.meeting.navigation.meetingGraph
 import ja.ko.tomo.feature.mypage.navigation.myPageGraph
 
@@ -126,6 +127,7 @@ private fun TomoNavHost(
     ) {
         // 이제 시스템 스플래시를 쓰므로 기존 splashGraph(navController)는 여기서 제거해도 됩니다.
         authGraph(navController)
+        feedGraph(navController)
         meetingGraph(navController)
         myPageGraph(navController)
         chatGraph(navController)
