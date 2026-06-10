@@ -7,6 +7,7 @@ import ja.ko.tomo.core.ui.util.UiText
 import ja.ko.tomo.domain.feed.model.FeedResult
 import ja.ko.tomo.domain.feed.model.RoomStatus
 import ja.ko.tomo.domain.feed.usecase.GetFeedsUseCase
+import ja.ko.tomo.domain.model.FeedFilter
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -94,6 +95,14 @@ class FeedViewModel @Inject constructor(
             _uiEffect.send(FeedUiEffect.ShowSnackBar(
                 UiText.StringResource(R.string.feed_enter_call_room, callRoomId)
             ))
+        }
+    }
+
+    fun onFilterClick(filter: FeedFilter) {
+        val currentState = _uiState.value
+        if (currentState is FeedUiState.Success) {
+            _uiState.value = currentState.copy(selectedFilter = filter)
+            //TODO 서버 개발 완료 시 여기서 filter에 따른 데이터 로드 호출
         }
     }
 

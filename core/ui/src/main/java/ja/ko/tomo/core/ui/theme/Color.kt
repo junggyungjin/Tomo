@@ -36,3 +36,11 @@ val Navy = Color(0xFF073042)
 val Blue = Color(0xFF4285F4)
 val LightBlue = Color(0xFFD7EFFE)
 val Chartreuse = Color(0xFFEFF7CF)
+
+// ADDED: 이미지에서 추출한 더 밝고 생동감 있는 우주 색상들
+val TopVibrantBlue = Color(0xFF26478D)  // 상단: 'Sociax' 로고 주변의 밝고 선명한 블루
+val MidDeepBlue = Color(0xFF0F1A3A)     // 중간: 스토리/피드 뒷배경의 깊은 블루
+val BottomDarkSpace = Color(0xFF050914) // 하단: 바텀 네비게이션 주변의 아주 어두운 네이비
+
+// ADDED: 상단의 은은한 빛(Glow)을 표현할 밝은 시안(Cyan) 색상
+val TopGlowColor = Color(0xFF5A8CE6).copy(alpha = 0.35f)

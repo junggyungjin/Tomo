@@ -3,4 +3,8 @@
     <!-- FeedViewModel -->
     <string name="feed_enter_call_room">통화방(ID: %1$s)에 입장합니다.</string>
 
+    <!-- FeedListScreen -->
+    <string name="feed_title">TOMO</string>
+    <string name="feed_filter_following">Following</string>
+    <string name="feed_filter_all">All</string>
 </resources>

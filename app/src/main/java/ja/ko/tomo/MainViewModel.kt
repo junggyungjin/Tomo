@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
 
                 if (isLoggedIn) {
                     // 성공 시 홈 화면 이동
-                    _startDestination.value = TomoNavRoutes.MeetingList
+                    _startDestination.value = TomoNavRoutes.FeedList
                     Timber.tag("MainViewModel").d("자동 로그인 성공: MeetingList로 이동")
                 }else {
                     // 검증 실패 시 로컬 데이터를 초기화하여 다음 진입 시 불필요한 검증 방지

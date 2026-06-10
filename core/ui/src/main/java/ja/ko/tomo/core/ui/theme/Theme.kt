@@ -51,7 +51,7 @@ fun TomoTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = TomoTypography,
         content = content
     )
 }

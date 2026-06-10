@@ -29,6 +29,7 @@ fun NavGraphBuilder.feedGraph(
             onNavigateToCreate = {
                 // TODO: navController.navigate(TomoNavRoutes.FEED_CREATE)
             },
+            onFilterClick = {},
             onRetry = viewModel::fetchFeeds
         )
     }
