@@ -59,7 +59,9 @@ fun TomoApp(
     // ViewModel에서 결정된 시작점을 구독
     val startDestination by mainViewModel.startDestination.collectAsStateWithLifecycle()
 
-    // ADDED: 앱 전체 화면을 캡처하고 블러 처리할 Haze 상태 관리 객체
+    val isReady by mainViewModel.isReady.collectAsStateWithLifecycle()
+
+    // 앱 전체 화면을 캡처하고 블러 처리할 Haze 상태 관리 객체
     val hazeState = remember { HazeState() }
 
     // 전역 세션 만료 이벤트 처리
@@ -84,27 +86,29 @@ fun TomoApp(
     )
 
     TomoTheme {
-        Scaffold(
-            containerColor = MaterialTheme.colorScheme.background
-        ) { padding ->
-            Box(modifier = Modifier.fillMaxSize()) {
-                TomoNavHost(
-                    navController = appState.navController,
-                    startDestination = startDestination,
-                    innerPadding = padding,
-                    modifier = Modifier.haze(state = hazeState)
-                )
-
-                if (appState.shouldShowBottomBar) {
-                    TomoBottomBar(
-                        currentRoute = appState.currentDestination?.route,
-                        onNavigate = { route -> appState.navigateToTopLevelDestination(route) },
-                        hazeState = hazeState,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 24.dp)
-                            .navigationBarsPadding()
+        if (isReady) {
+            Scaffold(
+                containerColor = MaterialTheme.colorScheme.background
+            ) { padding ->
+                Box(modifier = Modifier.fillMaxSize()) {
+                    TomoNavHost(
+                        navController = appState.navController,
+                        startDestination = startDestination,
+                        innerPadding = padding,
+                        modifier = Modifier.haze(state = hazeState)
                     )
+
+                    if (appState.shouldShowBottomBar) {
+                        TomoBottomBar(
+                            currentRoute = appState.currentDestination?.route,
+                            onNavigate = { route -> appState.navigateToTopLevelDestination(route) },
+                            hazeState = hazeState,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 24.dp)
+                                .navigationBarsPadding()
+                        )
+                    }
                 }
             }
         }
