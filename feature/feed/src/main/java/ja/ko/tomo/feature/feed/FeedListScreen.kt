@@ -99,6 +99,7 @@ fun FeedListScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState) { data ->
                 TomoSnackbar(snackbarData = data)
@@ -134,7 +135,7 @@ private fun FeedListContent(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 16.dp)
+        contentPadding = PaddingValues(bottom = 120.dp)
     ) {
         // 통화룸 영역
         item {
@@ -543,7 +544,7 @@ private fun FeedListScreenSuccessPreview() {
     val dummyFeeds = listOf(
         Feed(
             id = "1",
-            content = "오늘 날씨가 정말 좋네요! 다들 뭐하시나요?",
+            content = "오늘 날씨가 정말 좋네요! 다들 뭐하시나요?오늘 날씨가 정말 좋네요! 다들 뭐하시나요?오늘 날씨가 정말 좋네요! 다들 뭐하시나요?오늘 날씨가 정말 좋네요! 다들 뭐하시나요?",
             authorId = "UserA",
             callRoom = CallRoom("room1", RoomStatus.OPEN, 5, 2),
             createdAt = Date()

@@ -85,4 +85,8 @@ dependencies {
 
     //timber
     implementation(libs.timber)
+
+    // Glassmorphism (Haze)
+    implementation(libs.haze)
+    implementation(libs.haze.materials)
 }
