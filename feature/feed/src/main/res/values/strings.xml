@@ -7,4 +7,11 @@
     <string name="feed_title">TOMO</string>
     <string name="feed_filter_following">Following</string>
     <string name="feed_filter_all">All</string>
+
+    <!-- FeedCreate -->
+    <string name="feed_create_title">피드 작성</string>
+    <string name="feed_create_placeholder">어떤 이야기를 나누고 싶나요?</string>
+    <string name="feed_create_call_room_option">지금 바로 통화방 만들기</string>
+    <string name="feed_create_submit">등록하기</string>
+    <string name="feed_create_error_empty">내용을 입력해주세요.</string>
 </resources>

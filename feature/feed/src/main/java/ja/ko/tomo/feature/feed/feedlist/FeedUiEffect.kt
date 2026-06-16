@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.feed
+package ja.ko.tomo.feature.feed.feedlist
 
 import ja.ko.tomo.core.ui.util.UiText
 

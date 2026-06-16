@@ -1,4 +1,4 @@
-package ja.ko.tomo.feature.feed
+package ja.ko.tomo.feature.feed.feedlist
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -64,6 +64,7 @@ import ja.ko.tomo.domain.feed.model.CallRoom
 import ja.ko.tomo.domain.feed.model.Feed
 import ja.ko.tomo.domain.feed.model.RoomStatus
 import ja.ko.tomo.domain.model.FeedFilter
+import ja.ko.tomo.feature.feed.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import java.util.Date

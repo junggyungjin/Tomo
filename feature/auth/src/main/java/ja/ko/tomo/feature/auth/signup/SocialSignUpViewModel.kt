@@ -31,7 +31,7 @@ class SocialSignUpViewModel @Inject constructor(
     }
 
     /**
-     * // 화면 초기화 및 재시도 로직
+     * 화면 초기화 및 재시도 로직
      */
     fun initScreen() {
         _uiState.value = SocialSignUpUiState.Loading
