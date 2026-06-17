@@ -39,6 +39,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -79,6 +80,7 @@ fun FeedListScreen(
     onNavigateToDetail: (String) -> Unit,
     onNavigateToCreate: () -> Unit,
     onFilterClick: (FeedFilter) -> Unit,
+    onRefresh: () -> Unit,
     onRetry: () -> Unit
 ) {
     val context = LocalContext.current
@@ -114,51 +116,60 @@ fun FeedListScreen(
             isLoading = state is FeedUiState.Loading,
             errorMessage = (state as? FeedUiState.Error)?.message,
             isSuccess = state is FeedUiState.Success,
-            onRetry = onRetry,
+            onRetry = onRetry, // Error일때 사용
             modifier = Modifier.padding(padding)
         ) {
             FeedListContent(
                 state = state as FeedUiState.Success,
                 onFeedClick = onFeedClick,
                 onCallRoomClick = onCallRoomClick,
-                onFilterClick = onFilterClick
+                onFilterClick = onFilterClick,
+                onRefresh = onRefresh
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FeedListContent(
     state: FeedUiState.Success,
     onFeedClick: (String) -> Unit,
     onCallRoomClick: (String) -> Unit,
-    onFilterClick: (FeedFilter) -> Unit
+    onFilterClick: (FeedFilter) -> Unit,
+    onRefresh: () -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 120.dp)
+    PullToRefreshBox(
+        isRefreshing = state.isRefreshing,
+        onRefresh = onRefresh,
+        modifier = Modifier.fillMaxSize()
     ) {
-        // 통화룸 영역
-        item {
-            CallRoomStorySection(
-                activeRooms = state.activeCallRooms,
-                onRoomClick = onCallRoomClick
-            )
-        }
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 120.dp)
+        ) {
+            // 통화룸 영역
+            item {
+                CallRoomStorySection(
+                    activeRooms = state.activeCallRooms,
+                    onRoomClick = onCallRoomClick
+                )
+            }
 
-        item {
-            FeedFilterTab(
-                selectedFilter = state.selectedFilter,
-                onFilterClick = onFilterClick
-            )
-        }
+            item {
+                FeedFilterTab(
+                    selectedFilter = state.selectedFilter,
+                    onFilterClick = onFilterClick
+                )
+            }
 
-        // 피드 리스트
-        items(state.feeds) { feed ->
-            FeedItemCard(
-                feed = feed,
-                onClick = { onFeedClick(feed.id) }
-            )
+            // 피드 리스트
+            items(state.feeds) { feed ->
+                FeedItemCard(
+                    feed = feed,
+                    onClick = { onFeedClick(feed.id) }
+                )
+            }
         }
     }
 }
@@ -534,6 +545,7 @@ private fun FeedListScreenLoadingPreview() {
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},
+            onRefresh = {},
             onRetry = {}
         )
     }
@@ -579,6 +591,7 @@ private fun FeedListScreenSuccessPreview() {
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},
+            onRefresh = {},
             onRetry = {}
         )
     }
@@ -600,6 +613,7 @@ private fun FeedListScreenEmptyPreview() {
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},
+            onRefresh = {},
             onRetry = {}
         )
     }
@@ -620,6 +634,7 @@ private fun FeedListScreenErrorPreview() {
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},
+            onRefresh = {},
             onRetry = {}
         )
     }

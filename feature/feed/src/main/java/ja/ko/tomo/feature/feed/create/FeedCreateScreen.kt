@@ -59,7 +59,7 @@ fun FeedCreateScreen(
     onHasCallRoomChange: (Boolean) -> Unit,
     onCreateClick: () -> Unit,
     onBackClick: () -> Unit,
-    onNavigateBack: () -> Unit,
+    onNavigateBack: (Boolean) -> Unit,
     onRetry: () -> Unit
 ) {
     val context = LocalContext.current
@@ -68,7 +68,7 @@ fun FeedCreateScreen(
     LaunchedEffect(effect) {
         effect.collect { uiEffect ->
             when (uiEffect) {
-                is FeedCreateUiEffect.NavigateBack -> onNavigateBack()
+                is FeedCreateUiEffect.NavigateBack -> onNavigateBack(uiEffect.isSuccess)
                 is FeedCreateUiEffect.ShowSnackBar -> {
                     snackbarHostState.showSnackbar(
                         message = uiEffect.message.asString(context),

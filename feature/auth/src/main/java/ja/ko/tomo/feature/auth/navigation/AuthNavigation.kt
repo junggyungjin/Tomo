@@ -30,7 +30,7 @@ fun NavGraphBuilder.authGraph(
          */
         AuthIntroScreen(
             state = authIntroUiState,
-            effect = authViewModel.effect,
+            effect = authViewModel.uiEffect,
             onSignUpClick = {
                 authViewModel.onSignUpClick()
             },

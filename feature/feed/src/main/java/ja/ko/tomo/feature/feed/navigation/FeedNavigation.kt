@@ -1,5 +1,6 @@
 package ja.ko.tomo.feature.feed.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -18,6 +19,18 @@ fun NavGraphBuilder.feedGraph(
     // 1. 피드 리스트 화면
     composable(TomoNavRoutes.FeedList) {
         val viewModel: FeedViewModel = hiltViewModel()
+
+        // 피드 생성 화면에서 보낸 결과 확인
+        val navBackStackEntry = navController.currentBackStackEntry
+        val refreshRequired = navBackStackEntry?.savedStateHandle?.get<Boolean>("refresh_needed") ?: false
+
+        LaunchedEffect(refreshRequired) {
+            if (refreshRequired) {
+                viewModel.fetchFeeds()
+                navBackStackEntry?.savedStateHandle?.remove<Boolean>("refresh_needed") // 플래그 초기화
+            }
+        }
+
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
         FeedListScreen(
@@ -32,8 +45,9 @@ fun NavGraphBuilder.feedGraph(
             onNavigateToCreate = {
                 navController.navigate(TomoNavRoutes.FeedCreate)
             },
-            onFilterClick = {},
-            onRetry = viewModel::onRefresh
+            onFilterClick = viewModel::onFilterClick,
+            onRefresh = viewModel::onRefresh, // 새로 고침용
+            onRetry = viewModel::onRefresh // 에러 재시도용
         )
     }
 
@@ -49,7 +63,11 @@ fun NavGraphBuilder.feedGraph(
             onHasCallRoomChange = viewModel::onHasCallRoomChange,
             onCreateClick = viewModel::onCreateClick,
             onBackClick = viewModel::onBackClick,
-            onNavigateBack = {
+            onNavigateBack = { isSuccess ->
+                if (isSuccess) {
+                    // 이전 화면의 savedStateHandle에 결과 심기
+                    navController.previousBackStackEntry?.savedStateHandle?.set("refresh_needed", true)
+                }
                 navController.popBackStack()
             },
             onRetry = viewModel::onRefresh

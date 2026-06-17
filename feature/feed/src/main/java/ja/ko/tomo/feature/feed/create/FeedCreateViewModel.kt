@@ -65,7 +65,7 @@ class FeedCreateViewModel @Inject constructor(
 
             when (val result = createFeedUseCase(currentState.content, currentState.hasCallRoom)) {
                 is FeedResult.SingleSuccess -> {
-                    _uiEffect.send(FeedCreateUiEffect.NavigateBack)
+                    _uiEffect.send(FeedCreateUiEffect.NavigateBack(isSuccess = true))
                 }
                 is FeedResult.Error -> {
                     _uiState.update { currentState.copy(isSubmitting = false) }
@@ -81,7 +81,7 @@ class FeedCreateViewModel @Inject constructor(
     // Intent: 뒤로 가기 클릭
     fun onBackClick() {
         viewModelScope.launch {
-            _uiEffect.send(FeedCreateUiEffect.NavigateBack)
+            _uiEffect.send(FeedCreateUiEffect.NavigateBack(isSuccess = false))
         }
     }
 
