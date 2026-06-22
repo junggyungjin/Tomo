@@ -8,10 +8,13 @@ import kotlinx.serialization.Serializable
  */
 @OptIn(InternalSerializationApi::class)
 @Serializable
-class FeedResponseDto(
+data class FeedResponseDto(
     val id: String,
     val content: String? = null,
     val authorId: String,
+    val authorNickname: String,
+    val authorHandle: String,
+    val likeCount: Int,
     val callRoom: CallRoomResponseDto? = null,
     val createdAt: String
 ) {

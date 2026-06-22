@@ -202,7 +202,6 @@ private fun FeedTopBar(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 TopBarIconButton(icon = Icons.Default.Add, onClick = onCreateClick)
                 TopBarIconButton(icon = Icons.Default.Notifications, onClick = {})
-                TopBarIconButton(icon = Icons.Default.ChatBubbleOutline, onClick = {})
             }
         }
     }
@@ -366,7 +365,10 @@ private fun FeedItemCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             // 헤더
-            FeedItemHeader(authorId = feed.authorId)
+            FeedItemHeader(
+                nickname = feed.authorNickname,
+                handle = feed.authorHandle
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -383,14 +385,15 @@ private fun FeedItemCard(
             Spacer(modifier = Modifier.height(24.dp))
 
             // 푸터
-            FeedItemFooter()
+            FeedItemFooter(likeCount = feed.likeCount)
         }
     }
 }
 
 @Composable
 private fun FeedItemHeader(
-    authorId: String
+    nickname: String,
+    handle: String
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -405,7 +408,7 @@ private fun FeedItemHeader(
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Text(
-                        text = authorId.take(1).uppercase(),
+                        text = nickname.take(1).uppercase(),
                         style = TomoTypography.titleLarge,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -416,13 +419,13 @@ private fun FeedItemHeader(
 
             Column{
                 Text(
-                    text = authorId,
+                    text = nickname,
                     style = TomoTypography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "864 followers", // 임시 데이터
+                    text = "@$handle", // 임시 데이터
                     style = TomoTypography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -459,7 +462,9 @@ private fun FeedItemHeader(
 
 // 피드 하단 푸터
 @Composable
-private fun FeedItemFooter() {
+private fun FeedItemFooter(
+    likeCount: Int
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -475,7 +480,7 @@ private fun FeedItemFooter() {
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                SocialActionButton(icon = Icons.Default.Favorite, count = "216", iconColor = ErrorRed)
+                SocialActionButton(icon = Icons.Default.Favorite, count = likeCount.toString(), iconColor = ErrorRed)
                 SocialActionButton(icon = Icons.Default.ChatBubbleOutline, count = "108")
                 SocialActionButton(icon = Icons.Default.Share, count = "102")
             }
@@ -559,6 +564,9 @@ private fun FeedListScreenSuccessPreview() {
             id = "1",
             content = "오늘 날씨가 정말 좋네요! 다들 뭐하시나요?오늘 날씨가 정말 좋네요! 다들 뭐하시나요?오늘 날씨가 정말 좋네요! 다들 뭐하시나요?오늘 날씨가 정말 좋네요! 다들 뭐하시나요?",
             authorId = "UserA",
+            authorNickname = "토모친구", // ADDED
+            authorHandle = "tomo_friend", // ADDED
+            likeCount = 128,              // ADDED
             callRoom = CallRoom("room1", RoomStatus.OPEN, 5, 2),
             createdAt = Date()
         ),
@@ -566,6 +574,9 @@ private fun FeedListScreenSuccessPreview() {
             id = "2",
             content = "맛있는 점심 추천해주세요.",
             authorId = "UserB",
+            authorNickname = "토모친구", // ADDED
+            authorHandle = "tomo_friend", // ADDED
+            likeCount = 128,              // ADDED
             callRoom = null,
             createdAt = Date()
         ),
@@ -573,6 +584,9 @@ private fun FeedListScreenSuccessPreview() {
             id = "3",
             content = "새로운 취미를 찾고 있어요.",
             authorId = "UserC",
+            authorNickname = "토모친구", // ADDED
+            authorHandle = "tomo_friend", // ADDED
+            likeCount = 128,              // ADDED
             callRoom = CallRoom("room2", RoomStatus.OPEN, 8, 4),
             createdAt = Date()
         )

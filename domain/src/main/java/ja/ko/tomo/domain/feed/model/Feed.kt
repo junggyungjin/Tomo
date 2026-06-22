@@ -6,6 +6,9 @@ data class Feed(
     val id: String,
     val content: String?,
     val authorId: String,
+    val authorNickname: String,
+    val authorHandle: String,
+    val likeCount: Int,
     val callRoom: CallRoom?,
     val createdAt: Date
 )
