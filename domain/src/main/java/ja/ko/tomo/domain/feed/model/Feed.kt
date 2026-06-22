@@ -9,6 +9,7 @@ data class Feed(
     val authorNickname: String,
     val authorHandle: String,
     val likeCount: Int,
+    val isLiked: Boolean,
     val callRoom: CallRoom?,
     val createdAt: Date
 )

@@ -77,6 +77,7 @@ fun FeedListScreen(
     onFeedClick: (String) -> Unit,
     onCallRoomClick: (String) -> Unit,
     onCreateClick: () -> Unit,
+    onLikeClick: (String) -> Unit,
     onNavigateToDetail: (String) -> Unit,
     onNavigateToCreate: () -> Unit,
     onFilterClick: (FeedFilter) -> Unit,
@@ -123,6 +124,7 @@ fun FeedListScreen(
                 state = state as FeedUiState.Success,
                 onFeedClick = onFeedClick,
                 onCallRoomClick = onCallRoomClick,
+                onLikeClick = onLikeClick,
                 onFilterClick = onFilterClick,
                 onRefresh = onRefresh
             )
@@ -136,6 +138,7 @@ private fun FeedListContent(
     state: FeedUiState.Success,
     onFeedClick: (String) -> Unit,
     onCallRoomClick: (String) -> Unit,
+    onLikeClick: (String) -> Unit,
     onFilterClick: (FeedFilter) -> Unit,
     onRefresh: () -> Unit
 ) {
@@ -167,7 +170,8 @@ private fun FeedListContent(
             items(state.feeds) { feed ->
                 FeedItemCard(
                     feed = feed,
-                    onClick = { onFeedClick(feed.id) }
+                    onClick = { onFeedClick(feed.id) },
+                    onLikeClick = { onLikeClick(feed.id) }
                 )
             }
         }
@@ -350,7 +354,8 @@ private fun FilterTabItem(
 @Composable
 private fun FeedItemCard(
     feed: Feed,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLikeClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -385,7 +390,11 @@ private fun FeedItemCard(
             Spacer(modifier = Modifier.height(24.dp))
 
             // 푸터
-            FeedItemFooter(likeCount = feed.likeCount)
+            FeedItemFooter(
+                isLiked = feed.isLiked,
+                likeCount = feed.likeCount,
+                onLikeClick = onLikeClick
+            )
         }
     }
 }
@@ -463,7 +472,9 @@ private fun FeedItemHeader(
 // 피드 하단 푸터
 @Composable
 private fun FeedItemFooter(
-    likeCount: Int
+    isLiked: Boolean,
+    likeCount: Int,
+    onLikeClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -480,9 +491,14 @@ private fun FeedItemFooter(
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                SocialActionButton(icon = Icons.Default.Favorite, count = likeCount.toString(), iconColor = ErrorRed)
-                SocialActionButton(icon = Icons.Default.ChatBubbleOutline, count = "108")
-                SocialActionButton(icon = Icons.Default.Share, count = "102")
+                SocialActionButton(
+                    icon = Icons.Default.Favorite,
+                    count = likeCount.toString(),
+                    iconColor = if (isLiked) ErrorRed else MaterialTheme.colorScheme.onSurfaceVariant,
+                    onClick = onLikeClick
+                )
+                SocialActionButton(icon = Icons.Default.ChatBubbleOutline, count = "108", onClick =  {})
+                SocialActionButton(icon = Icons.Default.Share, count = "102", onClick =  {})
             }
         }
 
@@ -510,10 +526,11 @@ private fun FeedItemFooter(
 private fun SocialActionButton(
     icon: ImageVector,
     count: String,
-    iconColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
+    iconColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    onClick: () -> Unit
 ) {
     Surface(
-        onClick = {},
+        onClick = onClick,
         color = Color.Transparent,
         shape = RoundedCornerShape(20.dp)
     ) {
@@ -547,6 +564,7 @@ private fun FeedListScreenLoadingPreview() {
             onFeedClick = {},
             onCallRoomClick = {},
             onCreateClick = {},
+            onLikeClick = {},
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},
@@ -562,11 +580,12 @@ private fun FeedListScreenSuccessPreview() {
     val dummyFeeds = listOf(
         Feed(
             id = "1",
-            content = "오늘 날씨가 정말 좋네요! 다들 뭐하시나요?오늘 날씨가 정말 좋네요! 다들 뭐하시나요?오늘 날씨가 정말 좋네요! 다들 뭐하시나요?오늘 날씨가 정말 좋네요! 다들 뭐하시나요?",
+            content = "오늘 날씨가 정말 좋네요! 다들 뭐하시나요?",
             authorId = "UserA",
-            authorNickname = "토모친구", // ADDED
-            authorHandle = "tomo_friend", // ADDED
-            likeCount = 128,              // ADDED
+            authorNickname = "토모친구",
+            authorHandle = "tomo_friend",
+            likeCount = 128,
+            isLiked = true,
             callRoom = CallRoom("room1", RoomStatus.OPEN, 5, 2),
             createdAt = Date()
         ),
@@ -574,9 +593,10 @@ private fun FeedListScreenSuccessPreview() {
             id = "2",
             content = "맛있는 점심 추천해주세요.",
             authorId = "UserB",
-            authorNickname = "토모친구", // ADDED
-            authorHandle = "tomo_friend", // ADDED
-            likeCount = 128,              // ADDED
+            authorNickname = "토리",
+            authorHandle = "tori_daily",
+            likeCount = 42,
+            isLiked = false,
             callRoom = null,
             createdAt = Date()
         ),
@@ -584,9 +604,10 @@ private fun FeedListScreenSuccessPreview() {
             id = "3",
             content = "새로운 취미를 찾고 있어요.",
             authorId = "UserC",
-            authorNickname = "토모친구", // ADDED
-            authorHandle = "tomo_friend", // ADDED
-            likeCount = 128,              // ADDED
+            authorNickname = "모모",
+            authorHandle = "momo_hobby",
+            likeCount = 15,
+            isLiked = false,
             callRoom = CallRoom("room2", RoomStatus.OPEN, 8, 4),
             createdAt = Date()
         )
@@ -602,6 +623,7 @@ private fun FeedListScreenSuccessPreview() {
             onFeedClick = {},
             onCallRoomClick = {},
             onCreateClick = {},
+            onLikeClick = {},
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},
@@ -624,6 +646,7 @@ private fun FeedListScreenEmptyPreview() {
             onFeedClick = {},
             onCallRoomClick = {},
             onCreateClick = {},
+            onLikeClick = {},
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},
@@ -645,6 +668,7 @@ private fun FeedListScreenErrorPreview() {
             onFeedClick = {},
             onCallRoomClick = {},
             onCreateClick = {},
+            onLikeClick = {},
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},

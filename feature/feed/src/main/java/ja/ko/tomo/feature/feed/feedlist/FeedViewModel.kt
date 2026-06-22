@@ -8,6 +8,7 @@ import ja.ko.tomo.core.ui.util.toUiText
 import ja.ko.tomo.domain.feed.model.FeedResult
 import ja.ko.tomo.domain.feed.model.RoomStatus
 import ja.ko.tomo.domain.feed.usecase.GetFeedsUseCase
+import ja.ko.tomo.domain.feed.usecase.ToggleLikeUseCase
 import ja.ko.tomo.domain.model.FeedFilter
 import ja.ko.tomo.feature.feed.R
 import kotlinx.coroutines.flow.update
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val getFeedsUseCase: GetFeedsUseCase
+    private val getFeedsUseCase: GetFeedsUseCase,
+    private val toggleLikeUseCase: ToggleLikeUseCase
 ) : BaseViewModel<FeedUiState, FeedUiEffect>(FeedUiState.Loading) {
 
     init {
@@ -109,6 +111,35 @@ class FeedViewModel @Inject constructor(
     fun onCreateFeedClick() {
         viewModelScope.launch {
             _uiEffect.send(FeedUiEffect.NavigateToCreateFeed)
+        }
+    }
+
+    /**
+     * 피드 좋아요 클릭 처리 (Intent)
+     */
+    fun onLikeClick(feedId: String) {
+        viewModelScope.launch {
+            val currentState = _uiState.value as? FeedUiState.Success ?: return@launch
+
+            when (val result = toggleLikeUseCase(feedId)) {
+                is FeedResult.LikeSuccess -> {
+                    val updatedFeeds = currentState.feeds.map { feed ->
+                        if (feed.id == result.feedId) {
+                            feed.copy(
+                                isLiked = result.isLiked,
+                                likeCount = result.likeCount
+                            )
+                        } else {
+                            feed
+                        }
+                    }
+                    _uiState.update { currentState.copy(feeds = updatedFeeds) }
+                }
+                is FeedResult.Error -> {
+                    _uiEffect.send(FeedUiEffect.ShowSnackBar(UiText.DynamicString(result.message)))
+                }
+                else -> {}
+            }
         }
     }
 }

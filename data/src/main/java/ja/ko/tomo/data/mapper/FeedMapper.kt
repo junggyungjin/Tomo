@@ -15,6 +15,7 @@ fun FeedResponseDto.toDomain(): Feed {
         authorNickname = authorNickname,
         authorHandle = authorHandle,
         likeCount = likeCount,
+        isLiked = isLiked,
         callRoom = callRoom?.toDomain(),
         createdAt = createdAt.toApiDate()
     )

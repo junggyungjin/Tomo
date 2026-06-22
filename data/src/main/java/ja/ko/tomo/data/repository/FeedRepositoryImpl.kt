@@ -70,4 +70,22 @@ class FeedRepositoryImpl @Inject constructor(
             FeedResult.Error(e.message ?: "알 수 없는 에러가 발생했습니다.")
         }
     }
+
+    override suspend fun toggleLike(feedId: String): FeedResult {
+        return  try {
+            val response = feedApiService.toggleLike(feedId)
+            if (response.success && response.data != null) {
+                FeedResult.LikeSuccess(
+                    feedId = feedId,
+                    isLiked = response.data.isLiked,
+                    likeCount = response.data.likeCount
+                )
+            }else {
+                FeedResult.Error(response.error?.message ?: "좋아요 처리에 실패했습니다.")
+            }
+        }catch (e: Exception) {
+            Timber.tag("FeedRepo").e(e, "좋아요 토글 중 예외 발생")
+            FeedResult.Error("알 수 없는 에러가 발생했습니다.")
+        }
+    }
 }

@@ -6,4 +6,5 @@ interface FeedRepository {
     suspend fun getFeeds(): FeedResult
     suspend fun createdFeed(content: String?, hasCallRoom: Boolean): FeedResult
     suspend fun getFeedById(id: String): FeedResult
+    suspend fun toggleLike(feedId: String): FeedResult
 }

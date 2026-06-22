@@ -3,6 +3,7 @@ package ja.ko.tomo.data.remote
 import ja.ko.tomo.data.dto.ApiResponse
 import ja.ko.tomo.data.dto.request.CreateFeedRequest
 import ja.ko.tomo.data.dto.response.FeedResponseDto
+import ja.ko.tomo.data.dto.response.LikeResponseDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -35,4 +36,12 @@ interface FeedApiService {
     suspend fun getFeedById(
         @Path("id") feedId: String
     ): ApiResponse<FeedResponseDto>
+
+    /**
+     * 피드 좋아요 토글
+     */
+    @POST("feeds/{id}/like")
+    suspend fun toggleLike(
+        @Path("id") feedId: String
+    ): ApiResponse<LikeResponseDto>
 }
