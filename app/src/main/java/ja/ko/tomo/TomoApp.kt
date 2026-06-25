@@ -95,6 +95,7 @@ fun TomoApp(
                         navController = appState.navController,
                         startDestination = startDestination,
                         innerPadding = padding,
+                        mainViewModel = mainViewModel,
                         modifier = Modifier.haze(state = hazeState)
                     )
 
@@ -184,6 +185,7 @@ private fun TomoNavHost(
     navController: NavHostController,
     startDestination: String, // 파라미터 추가
     innerPadding: PaddingValues,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -196,7 +198,15 @@ private fun TomoNavHost(
         authGraph(navController)
         feedGraph(navController)
         meetingGraph(navController)
-        myPageGraph(navController)
+        myPageGraph(
+            navController = navController,
+            onLogoutSuccess = {
+                mainViewModel.logout()
+                navController.navigate(TomoNavRoutes.AuthIntro) {
+                    popUpTo(0) { inclusive = true}
+                }
+            }
+        )
         chatGraph(navController)
     }
 }

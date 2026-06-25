@@ -1,11 +1,13 @@
 package ja.ko.tomo.data.repository
 
+import ja.ko.tomo.data.dto.request.LogoutRequest
 import ja.ko.tomo.data.dto.request.SocialSignUpRequest
 import ja.ko.tomo.data.local.TokenManager
 import ja.ko.tomo.data.mapper.toDomain
 import ja.ko.tomo.data.remote.AuthService
 import ja.ko.tomo.domain.model.AuthResult
 import ja.ko.tomo.domain.repository.AuthRepository
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
 import javax.inject.Inject
@@ -66,7 +68,25 @@ class AuthRepositoryImpl @Inject constructor(
         return !token.isNullOrBlank()
     }
 
-    override suspend fun logout() {
-        tokenManager.clearTokens()
+    override suspend fun logout(): AuthResult {
+        return try {
+            // 저장된 리프레시 토큰 가져오기
+            val refreshToken = tokenManager.refreshToken.first() ?: ""
+
+            // 서버 API 호출
+            if (refreshToken.isNotBlank()) {
+                authService.logout(LogoutRequest(refreshToken))
+            }
+
+            // 로컬 데이터 삭제 (서버 결과와 무관하게 수행하여 사용자 세션 종료)
+            tokenManager.clearTokens()
+
+            AuthResult.LogoutSuccess
+
+        }catch (e: Exception) {
+            Timber.tag("AuthRepo").e(e, "로그아웃 중 오류 발생")
+            tokenManager.clearTokens()
+            AuthResult.Error(e.message ?: "로그아웃 처리 중 오류가 발생했습니다.")
+        }
     }
 }

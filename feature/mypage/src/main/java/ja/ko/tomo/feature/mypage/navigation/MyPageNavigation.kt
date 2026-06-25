@@ -11,7 +11,8 @@ import ja.ko.tomo.feature.mypage.MyPageScreen
 import ja.ko.tomo.feature.mypage.MyPageViewModel
 
 fun NavGraphBuilder.myPageGraph(
-    navController: NavController
+    navController: NavController,
+    onLogoutSuccess: () -> Unit
 ) {
     composable(
         TomoNavRoutes.MyPage
@@ -19,6 +20,12 @@ fun NavGraphBuilder.myPageGraph(
         val myPageViewModel: MyPageViewModel = hiltViewModel()
         val myPageUiState by myPageViewModel.uiState.collectAsStateWithLifecycle()
 
-        MyPageScreen(state = myPageUiState)
+        MyPageScreen(
+            state = myPageUiState,
+            effect = myPageViewModel.uiEffect,
+            onLogoutClick = myPageViewModel::onLogoutClick,
+            onNavigateToAuth = onLogoutSuccess,
+            onRetry = myPageViewModel::loadMyInfo
+        )
     }
 }

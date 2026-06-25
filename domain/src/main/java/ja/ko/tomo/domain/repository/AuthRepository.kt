@@ -13,5 +13,5 @@ interface AuthRepository {
 
     suspend fun isLoggedIn(): Boolean
 
-    suspend fun logout()
+    suspend fun logout(): AuthResult
 }

@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
  */
 @OptIn(InternalSerializationApi::class)
 @Serializable
-class CreateFeedRequest(
+data class CreateFeedRequest(
     val content: String? = null,
     val hasCallRoom: Boolean
 ) {

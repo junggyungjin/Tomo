@@ -152,12 +152,12 @@ private fun FeedListContent(
             contentPadding = PaddingValues(bottom = 120.dp)
         ) {
             // 통화룸 영역
-            item {
-                CallRoomStorySection(
-                    activeRooms = state.activeCallRooms,
-                    onRoomClick = onCallRoomClick
-                )
-            }
+//            item {
+//                CallRoomStorySection(
+//                    activeRooms = state.activeCallRooms,
+//                    onRoomClick = onCallRoomClick
+//                )
+//            }
 
             item {
                 FeedFilterTab(
@@ -246,7 +246,7 @@ private fun CallRoomStorySection(
     ) {
         items(activeRooms) { room ->
             CallRoomItem(
-                name = room.authorId,
+                name = room.authorNickname,
                 onClick = { room.callRoom?.let { onRoomClick(it.id) }}
             )
         }

@@ -84,6 +84,9 @@ class SocialSignUpViewModel @Inject constructor(
                             }
                         }
 
+                        // 회원가입 도중 로그아웃 성공이 올 일은 없으므로 아무 처리도 하지 않는다.
+                        is AuthResult.LogoutSuccess -> { }
+
                         is AuthResult.Error -> {
                             _effect.send(
                                 SocialSignUpUiEffect.ShowToast(
