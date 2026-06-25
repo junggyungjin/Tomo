@@ -1,6 +1,8 @@
 package ja.ko.tomo.feature.auth
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +26,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +46,6 @@ import ja.ko.tomo.core.ui.component.SystemBarVisuals
 import ja.ko.tomo.core.ui.component.TomoSnackbar
 import ja.ko.tomo.core.ui.component.TomoStateView
 import ja.ko.tomo.core.ui.component.VideoBackground
-import ja.ko.tomo.core.ui.theme.TomoBlue
 import ja.ko.tomo.core.ui.theme.TomoTheme
 import ja.ko.tomo.core.ui.theme.White
 import ja.ko.tomo.core.ui.util.UiText
@@ -55,9 +59,11 @@ fun AuthIntroScreen(
     state: AuthIntroUiState,
     effect: Flow<AuthIntroUiEffect>,
     onSignUpClick: () -> Unit,
+    onDevLoginClick: () -> Unit,
     onInquiryClick: () -> Unit,
     onNavigateToSignUp: () -> Unit,
     onNavigateToInquiry: () -> Unit, // 2. 뷰머델이 UI에 시킴
+    onNavigateToHome: () -> Unit,
     onUserReturned: () -> Unit,
     onRetry: () -> Unit
 ) {
@@ -97,6 +103,8 @@ fun AuthIntroScreen(
                     delay(1500)
                     job.cancel()
                 }
+
+                AuthIntroUiEffect.NavigateToHome -> onNavigateToHome()
             }
         }
     }
@@ -124,7 +132,8 @@ fun AuthIntroScreen(
                 AuthIntroContent(
                     state = state,
                     onSignUpClick = onSignUpClick,
-                    onInquiryClick = onInquiryClick
+                    onInquiryClick = onInquiryClick,
+                    onDevLoginClick = onDevLoginClick
                 )
             }
         }
@@ -135,8 +144,11 @@ fun AuthIntroScreen(
 private fun AuthIntroContent(
     state: AuthIntroUiState,
     onSignUpClick: () -> Unit,
-    onInquiryClick: () -> Unit
+    onInquiryClick: () -> Unit,
+    onDevLoginClick: () -> Unit
 ) {
+    var logoClickCount by remember { mutableIntStateOf(0) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -161,6 +173,16 @@ private fun AuthIntroContent(
                 .align(Alignment.TopCenter)
                 .statusBarsPadding() // 상태바 영역 만큼 자동 패딩
                 .padding(top = 60.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null // 클릭 피드백 없앰 (비밀 기능)
+                ) {
+                    logoClickCount++
+                    if (logoClickCount >= 5) {
+                        onDevLoginClick()
+                        logoClickCount = 0
+                    }
+                }
         )
 
         // 하단 버튼
@@ -210,9 +232,11 @@ private fun AuthIntroScreenLoadingPreview() {
             state = AuthIntroUiState.Loading, // UPDATED: 로딩 상태 주입
             effect = emptyFlow(),
             onSignUpClick = {},
+            onDevLoginClick = {},
             onInquiryClick = {},
             onNavigateToSignUp = {},
             onNavigateToInquiry = {},
+            onNavigateToHome = {},
             onUserReturned = {},
             onRetry = {}
         )
@@ -229,9 +253,11 @@ private fun AuthIntroScreenErrorPreview() {
             ), // UPDATED: 에러 상태 주입
             effect = emptyFlow(),
             onSignUpClick = {},
+            onDevLoginClick = {},
             onInquiryClick = {},
             onNavigateToSignUp = {},
             onNavigateToInquiry = {},
+            onNavigateToHome = {},
             onUserReturned = {},
             onRetry = {}
         )

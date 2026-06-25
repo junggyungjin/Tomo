@@ -1,6 +1,7 @@
 package ja.ko.tomo.data.remote
 
 import ja.ko.tomo.data.dto.ApiResponse
+import ja.ko.tomo.data.dto.request.DevLoginRequest
 import ja.ko.tomo.data.dto.request.LogoutRequest
 import ja.ko.tomo.data.dto.response.AuthLoginResponseData
 import ja.ko.tomo.data.dto.request.SocialSignUpRequest
@@ -26,4 +27,9 @@ interface AuthService {
     suspend fun logout(
         @Body request: LogoutRequest
     ): ApiResponse<Unit>
+
+    @POST("auth/dev/login")
+    suspend fun devLogin(
+        @Body request: DevLoginRequest
+    ): ApiResponse<AuthLoginResponseData>
 }

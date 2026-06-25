@@ -14,4 +14,10 @@ interface AuthRepository {
     suspend fun isLoggedIn(): Boolean
 
     suspend fun logout(): AuthResult
+
+    /**
+     * 개발 환경 전용 로그인
+     * @param providerId 테스트용 ID
+     */
+    suspend fun devLogin(providerId: String): AuthResult
 }

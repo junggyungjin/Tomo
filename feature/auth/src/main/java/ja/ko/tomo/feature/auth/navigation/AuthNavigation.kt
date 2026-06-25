@@ -34,6 +34,7 @@ fun NavGraphBuilder.authGraph(
             onSignUpClick = {
                 authViewModel.onSignUpClick()
             },
+            onDevLoginClick = authViewModel::onDevLoginClick,
             onInquiryClick = {
                 authViewModel.onInquiryClick()
             },
@@ -42,6 +43,11 @@ fun NavGraphBuilder.authGraph(
             },
             onNavigateToInquiry = {
                 context.sendInquiryEmail(to = context.getString(R.string.auth_support_email))
+            },
+            onNavigateToHome = {
+                navController.navigate(TomoNavRoutes.FeedList) {
+                    popUpTo(TomoNavRoutes.AuthIntro) { inclusive = true}
+                }
             },
             onUserReturned = {
                 authViewModel.onUserReturned()
