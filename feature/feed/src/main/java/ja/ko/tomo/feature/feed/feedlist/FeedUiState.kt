@@ -13,7 +13,8 @@ sealed interface FeedUiState {
         val feeds: List<Feed> = emptyList(),
         val activeCallRooms: List<Feed> = emptyList(),
         val selectedFilter: FeedFilter = FeedFilter.ALL,
-        val isRefreshing: Boolean = false
+        val isRefreshing: Boolean = false,
+        val isFollowSubmitting: Boolean = false // 중복 클릭 방지
     ) : FeedUiState
     data class Error(val message: UiText) : FeedUiState
 }

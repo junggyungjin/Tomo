@@ -3,6 +3,7 @@ package ja.ko.tomo.data.repository
 import ja.ko.tomo.data.dto.request.UpdateUserProfileRequestDto
 import ja.ko.tomo.data.mapper.toDomain
 import ja.ko.tomo.data.remote.UserApiService
+import ja.ko.tomo.domain.model.FollowResult
 import ja.ko.tomo.domain.model.Gender
 import ja.ko.tomo.domain.model.UserResult
 import ja.ko.tomo.domain.repository.UserRepository
@@ -60,6 +61,22 @@ class UserRepositoryImpl @Inject constructor(
         }catch (e: Exception) {
             Timber.tag("UserRepo").e(e, "프로필 업데이트 중 예상치 못한 예외 발생")
             UserResult.Error(e.message ?: "프로필 업데이트 중 알 수 없는 에러가 발생했습니다.")
+        }
+    }
+
+    override suspend fun toggleFollow(userId: String): FollowResult {
+        return try {
+            val response = userApiService.toggleFollow(userId)
+            if (response.success && response.data != null) {
+                FollowResult.Success(response.data.isFollowing)
+            }else {
+                val errorBody = response.error
+                Timber.tag("UserRepo").e("팔로우 토글 실패: userId=$userId, code=${errorBody?.code}, message=${errorBody?.message}")
+                FollowResult.Error(response.error?.message ?: "팔로우 처리에 실패했습니다.")
+            }
+        }catch (e: Exception) {
+            Timber.tag("UserRepo").e(e, "팔로우 토글 중 예상치 못한 예외 발생")
+            FollowResult.Error(e.message ?: "Unknown Error")
         }
     }
 }

@@ -47,7 +47,7 @@ class MyPageViewModel @Inject constructor(
      * 로그아웃 버튼 클릭 (Intent)
      */
     fun onLogoutClick() {
-        val currentState = uiState.value as? MyPageUiState.Success ?: return
+        val currentState = _uiState.value as? MyPageUiState.Success ?: return
         if (currentState.isLoggingOut) return
 
         viewModelScope.launch {

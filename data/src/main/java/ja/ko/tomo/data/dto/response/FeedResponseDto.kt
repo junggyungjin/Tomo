@@ -16,6 +16,7 @@ data class FeedResponseDto(
     val authorHandle: String,
     val likeCount: Int,
     val isLiked: Boolean,
+    val isAuthorFollowing: Boolean,
     val callRoom: CallRoomResponseDto? = null,
     val createdAt: String
 ) {

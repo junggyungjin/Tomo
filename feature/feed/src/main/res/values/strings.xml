@@ -7,6 +7,7 @@
     <string name="feed_title">TOMO</string>
     <string name="feed_filter_following">Following</string>
     <string name="feed_filter_all">All</string>
+    <string name="feed_follow">Follow</string>
 
     <!-- FeedCreate -->
     <string name="feed_create_title">피드 작성</string>

@@ -38,6 +38,7 @@ fun NavGraphBuilder.feedGraph(
             effect = viewModel.uiEffect,
             onFeedClick = viewModel::onFeedClick,
             onLikeClick = viewModel::onLikeClick,
+            onFollowClick = viewModel::onFollowClick,
             onCallRoomClick = viewModel::onCallRoomClick,
             onCreateClick = viewModel::onCreateFeedClick,
             onNavigateToDetail = { feedId ->

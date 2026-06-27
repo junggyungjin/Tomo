@@ -7,7 +7,7 @@ import ja.ko.tomo.domain.feed.model.CallRoom
 import ja.ko.tomo.domain.feed.model.Feed
 import ja.ko.tomo.domain.feed.model.RoomStatus
 
-fun FeedResponseDto.toDomain(): Feed {
+fun FeedResponseDto.toDomain(currentUserId: String): Feed {
     return Feed(
         id = id,
         content = content,
@@ -16,6 +16,8 @@ fun FeedResponseDto.toDomain(): Feed {
         authorHandle = authorHandle,
         likeCount = likeCount,
         isLiked = isLiked,
+        isAuthorFollowing = isAuthorFollowing,
+        isMyFeed = authorId == currentUserId,
         callRoom = callRoom?.toDomain(),
         createdAt = createdAt.toApiDate()
     )

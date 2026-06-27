@@ -1,22 +1,27 @@
 package ja.ko.tomo.data.repository
 
 import ja.ko.tomo.data.dto.request.CreateFeedRequest
+import ja.ko.tomo.data.dto.response.FeedResponseDto
+import ja.ko.tomo.data.local.SessionManager
 import ja.ko.tomo.data.mapper.toDomain
 import ja.ko.tomo.data.remote.FeedApiService
+import ja.ko.tomo.domain.feed.model.Feed
 import ja.ko.tomo.domain.feed.model.FeedResult
 import ja.ko.tomo.domain.feed.repository.FeedRepository
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import javax.inject.Inject
 
 class FeedRepositoryImpl @Inject constructor(
-    private val feedApiService: FeedApiService
+    private val feedApiService: FeedApiService,
+    private val sessionManager: SessionManager
 ) : FeedRepository {
     override suspend fun getFeeds(): FeedResult {
         return try {
             val response = feedApiService.getFeeds()
 
             if (response.success && response.data != null) {
-                val feeds = response.data.map { it.toDomain() }
+                val feeds = response.data.map { it.mapToDomain() }
                 if (feeds.isEmpty()) {
                     FeedResult.Empty
                 } else {
@@ -42,7 +47,7 @@ class FeedRepositoryImpl @Inject constructor(
                 CreateFeedRequest(content = content, hasCallRoom = hasCallRoom)
             )
             if (response.success && response.data != null) {
-                FeedResult.SingleSuccess(response.data.toDomain())
+                FeedResult.SingleSuccess(response.data.mapToDomain())
             }else {
                 val errorBody = response.error
                 Timber.tag("FeedRepo").e("피드 생성 실패: code=${errorBody?.code}, message=${errorBody?.message}")
@@ -59,7 +64,7 @@ class FeedRepositoryImpl @Inject constructor(
             val response = feedApiService.getFeedById(feedId = id)
 
             if (response.success && response.data != null) {
-                FeedResult.SingleSuccess(response.data.toDomain())
+                FeedResult.SingleSuccess(response.data.mapToDomain())
             }else {
                 val errorBody = response.error
                 Timber.tag("FeedRepo").e("피드 상세 조회 실패: id=$id, code=${errorBody?.code}, message=${errorBody?.message}")
@@ -87,5 +92,10 @@ class FeedRepositoryImpl @Inject constructor(
             Timber.tag("FeedRepo").e(e, "좋아요 토글 중 예외 발생")
             FeedResult.Error("알 수 없는 에러가 발생했습니다.")
         }
+    }
+
+    private suspend fun FeedResponseDto.mapToDomain(): Feed {
+        val currentUserId = sessionManager.userId.first() ?: ""
+        return this.toDomain(currentUserId = currentUserId)
     }
 }

@@ -1,5 +1,6 @@
 package ja.ko.tomo.data.repository
 
+import ja.ko.tomo.domain.model.FollowResult
 import ja.ko.tomo.domain.model.Gender
 import ja.ko.tomo.domain.model.User
 import ja.ko.tomo.domain.model.UserResult
@@ -30,6 +31,10 @@ class FakeUserRepositoryImpl @Inject constructor() : UserRepository {
         gender: Gender,
         profileImageUrl: String?
     ): UserResult {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun toggleFollow(userId: String): FollowResult {
         TODO("Not yet implemented")
     }
 

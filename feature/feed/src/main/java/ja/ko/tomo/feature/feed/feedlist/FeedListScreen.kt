@@ -78,6 +78,7 @@ fun FeedListScreen(
     onCallRoomClick: (String) -> Unit,
     onCreateClick: () -> Unit,
     onLikeClick: (String) -> Unit,
+    onFollowClick: (String) -> Unit,
     onNavigateToDetail: (String) -> Unit,
     onNavigateToCreate: () -> Unit,
     onFilterClick: (FeedFilter) -> Unit,
@@ -125,6 +126,7 @@ fun FeedListScreen(
                 onFeedClick = onFeedClick,
                 onCallRoomClick = onCallRoomClick,
                 onLikeClick = onLikeClick,
+                onFollowClick = onFollowClick,
                 onFilterClick = onFilterClick,
                 onRefresh = onRefresh
             )
@@ -139,6 +141,7 @@ private fun FeedListContent(
     onFeedClick: (String) -> Unit,
     onCallRoomClick: (String) -> Unit,
     onLikeClick: (String) -> Unit,
+    onFollowClick: (String) -> Unit,
     onFilterClick: (FeedFilter) -> Unit,
     onRefresh: () -> Unit
 ) {
@@ -152,12 +155,12 @@ private fun FeedListContent(
             contentPadding = PaddingValues(bottom = 120.dp)
         ) {
             // 통화룸 영역
-//            item {
-//                CallRoomStorySection(
-//                    activeRooms = state.activeCallRooms,
-//                    onRoomClick = onCallRoomClick
-//                )
-//            }
+            item {
+                CallRoomStorySection(
+                    activeRooms = state.activeCallRooms,
+                    onRoomClick = onCallRoomClick
+                )
+            }
 
             item {
                 FeedFilterTab(
@@ -171,7 +174,8 @@ private fun FeedListContent(
                 FeedItemCard(
                     feed = feed,
                     onClick = { onFeedClick(feed.id) },
-                    onLikeClick = { onLikeClick(feed.id) }
+                    onLikeClick = { onLikeClick(feed.id) },
+                    onFollowClick = { onFollowClick(feed.authorId) }
                 )
             }
         }
@@ -355,7 +359,8 @@ private fun FilterTabItem(
 private fun FeedItemCard(
     feed: Feed,
     onClick: () -> Unit,
-    onLikeClick: () -> Unit
+    onLikeClick: () -> Unit,
+    onFollowClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -372,7 +377,10 @@ private fun FeedItemCard(
             // 헤더
             FeedItemHeader(
                 nickname = feed.authorNickname,
-                handle = feed.authorHandle
+                handle = feed.authorHandle,
+                isAuthorFollowing = feed.isAuthorFollowing,
+                isMyFeed = feed.isMyFeed,
+                onFollowClick = onFollowClick
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -402,7 +410,10 @@ private fun FeedItemCard(
 @Composable
 private fun FeedItemHeader(
     nickname: String,
-    handle: String
+    handle: String,
+    isAuthorFollowing: Boolean,
+    isMyFeed: Boolean,
+    onFollowClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -442,28 +453,30 @@ private fun FeedItemHeader(
         }
 
         // Follow 버튼
-        Surface(
-            onClick = {},
-            shape = RoundedCornerShape(18.dp),
-            color = MaterialTheme.colorScheme.onSurface,
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically
+        if (!isAuthorFollowing && !isMyFeed) {
+            Surface(
+                onClick = onFollowClick,
+                shape = RoundedCornerShape(18.dp),
+                color = MaterialTheme.colorScheme.onSurface,
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    modifier = Modifier.size(14.dp),
-                    tint = MaterialTheme.colorScheme.surface
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "Follow",
-                    style = TomoTypography.labelSmall,
-                    color = MaterialTheme.colorScheme.surface,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = MaterialTheme.colorScheme.surface
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = stringResource(id = R.string.feed_follow),
+                        style = TomoTypography.labelSmall,
+                        color = MaterialTheme.colorScheme.surface,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
@@ -565,6 +578,7 @@ private fun FeedListScreenLoadingPreview() {
             onCallRoomClick = {},
             onCreateClick = {},
             onLikeClick = {},
+            onFollowClick = {},
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},
@@ -586,6 +600,8 @@ private fun FeedListScreenSuccessPreview() {
             authorHandle = "tomo_friend",
             likeCount = 128,
             isLiked = true,
+            isAuthorFollowing = true,
+            isMyFeed = true,
             callRoom = CallRoom("room1", RoomStatus.OPEN, 5, 2),
             createdAt = Date()
         ),
@@ -597,6 +613,8 @@ private fun FeedListScreenSuccessPreview() {
             authorHandle = "tori_daily",
             likeCount = 42,
             isLiked = false,
+            isAuthorFollowing = true,
+            isMyFeed = false,
             callRoom = null,
             createdAt = Date()
         ),
@@ -608,6 +626,8 @@ private fun FeedListScreenSuccessPreview() {
             authorHandle = "momo_hobby",
             likeCount = 15,
             isLiked = false,
+            isAuthorFollowing = false,
+            isMyFeed = false,
             callRoom = CallRoom("room2", RoomStatus.OPEN, 8, 4),
             createdAt = Date()
         )
@@ -624,6 +644,7 @@ private fun FeedListScreenSuccessPreview() {
             onCallRoomClick = {},
             onCreateClick = {},
             onLikeClick = {},
+            onFollowClick = {},
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},
@@ -647,6 +668,7 @@ private fun FeedListScreenEmptyPreview() {
             onCallRoomClick = {},
             onCreateClick = {},
             onLikeClick = {},
+            onFollowClick = {},
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},
@@ -669,6 +691,7 @@ private fun FeedListScreenErrorPreview() {
             onCallRoomClick = {},
             onCreateClick = {},
             onLikeClick = {},
+            onFollowClick = {},
             onNavigateToDetail = {},
             onNavigateToCreate = {},
             onFilterClick = {},

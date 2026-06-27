@@ -10,6 +10,8 @@ import ja.ko.tomo.domain.feed.model.RoomStatus
 import ja.ko.tomo.domain.feed.usecase.GetFeedsUseCase
 import ja.ko.tomo.domain.feed.usecase.ToggleLikeUseCase
 import ja.ko.tomo.domain.model.FeedFilter
+import ja.ko.tomo.domain.model.FollowResult
+import ja.ko.tomo.domain.usecase.user.ToggleFollowUseCase
 import ja.ko.tomo.feature.feed.R
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val getFeedsUseCase: GetFeedsUseCase,
-    private val toggleLikeUseCase: ToggleLikeUseCase
+    private val toggleLikeUseCase: ToggleLikeUseCase,
+    private val toggleFollowUseCase: ToggleFollowUseCase
 ) : BaseViewModel<FeedUiState, FeedUiEffect>(FeedUiState.Loading) {
 
     init {
@@ -139,6 +142,41 @@ class FeedViewModel @Inject constructor(
                     _uiEffect.send(FeedUiEffect.ShowSnackBar(UiText.DynamicString(result.message)))
                 }
                 else -> {}
+            }
+        }
+    }
+
+    /**
+     * 팔로우 클릭 처리 (Intent)
+     */
+    fun onFollowClick(userId: String) {
+        val currentState = _uiState.value as? FeedUiState.Success ?: return
+        if (currentState.isFollowSubmitting) return
+
+        viewModelScope.launch {
+            _uiState.update { currentState.copy(isFollowSubmitting = true) }
+
+            when (val result = toggleFollowUseCase(userId)) {
+                is FollowResult.Success -> {
+                    // 3. 성공 시 리스트 내 해당 유저가 작성한 모든 피드의 팔로우 상태 업데이트
+                    val updatedFeeds = currentState.feeds.map { feed ->
+                        if (feed.authorId == userId) {
+                            feed.copy(isAuthorFollowing = result.isFollowing)
+                        } else {
+                            feed
+                        }
+                    }
+                    _uiState.update {
+                        currentState.copy(
+                            feeds = updatedFeeds,
+                            isFollowSubmitting = false
+                        )
+                    }
+                }
+                is FollowResult.Error -> {
+                    _uiState.update { currentState.copy(isFollowSubmitting = false) }
+                    _uiEffect.send(FeedUiEffect.ShowSnackBar(UiText.DynamicString(result.message)))
+                }
             }
         }
     }

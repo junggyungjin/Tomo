@@ -3,6 +3,7 @@ package ja.ko.tomo.data.repository
 import ja.ko.tomo.data.dto.request.DevLoginRequest
 import ja.ko.tomo.data.dto.request.LogoutRequest
 import ja.ko.tomo.data.dto.request.SocialSignUpRequest
+import ja.ko.tomo.data.local.SessionManager
 import ja.ko.tomo.data.local.TokenManager
 import ja.ko.tomo.data.mapper.toDomain
 import ja.ko.tomo.data.remote.AuthService
@@ -16,7 +17,8 @@ import kotlin.math.log
 
 class AuthRepositoryImpl @Inject constructor(
     private val authService: AuthService,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    private val sessionManager: SessionManager
 ): AuthRepository {
     override suspend fun signUpWithSocial(
         provider: String,
@@ -46,6 +48,9 @@ class AuthRepositoryImpl @Inject constructor(
                     access = loginData.accessToken,
                     refresh = loginData.refreshToken
                 )
+
+                // 유저 ID 세션 저장
+                sessionManager.saveUserId(loginData.user.id)
 
                 AuthResult.Success(loginData.user.toDomain())
             }else {
@@ -82,12 +87,14 @@ class AuthRepositoryImpl @Inject constructor(
 
             // 로컬 데이터 삭제 (서버 결과와 무관하게 수행하여 사용자 세션 종료)
             tokenManager.clearTokens()
+            sessionManager.clearSession()
 
             AuthResult.LogoutSuccess
 
         }catch (e: Exception) {
             Timber.tag("AuthRepo").e(e, "로그아웃 중 오류 발생")
             tokenManager.clearTokens()
+            sessionManager.clearSession()
             AuthResult.Error(e.message ?: "로그아웃 처리 중 오류가 발생했습니다.")
         }
     }
@@ -103,6 +110,8 @@ class AuthRepositoryImpl @Inject constructor(
                     access = loginData.accessToken,
                     refresh = loginData.refreshToken
                 )
+
+                sessionManager.saveUserId(loginData.user.id)
 
                 AuthResult.Success(loginData.user.toDomain())
             }else {
