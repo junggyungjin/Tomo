@@ -25,27 +25,28 @@ class FeedViewModel @Inject constructor(
 ) : BaseViewModel<FeedUiState, FeedUiEffect>(FeedUiState.Loading) {
 
     init {
-        fetchFeeds()
+        fetchFeeds(FeedFilter.ALL)
     }
 
     /**
      * 피드 데이터를 가져오는 함수 (Intent)
      */
-    fun fetchFeeds() {
+    fun fetchFeeds(filter: FeedFilter = FeedFilter.ALL) {
         viewModelScope.launch {
             try {
                 val currentState = _uiState.value
                 if (currentState is FeedUiState.Success) {
-                    _uiState.update { currentState.copy(isRefreshing = true) }
+                    _uiState.update { currentState.copy(isRefreshing = true, selectedFilter = filter) }
                 }else {
                     _uiState.value = FeedUiState.Loading
                 }
 
-                when (val result = getFeedsUseCase()) {
+                when (val result = getFeedsUseCase(filter)) {
                     is FeedResult.Success -> {
                         _uiState.value = FeedUiState.Success(
                             feeds = result.feeds,
                             activeCallRooms = result.feeds.filter { it.callRoom != null && it.callRoom?.status == RoomStatus.OPEN},
+                            selectedFilter = filter,
                             isRefreshing = false
                         )
                     }
@@ -53,6 +54,7 @@ class FeedViewModel @Inject constructor(
                         _uiState.value = FeedUiState.Success(
                             feeds = emptyList(),
                             activeCallRooms = emptyList(),
+                            selectedFilter = filter,
                             isRefreshing = false
                         )
                     }
@@ -76,7 +78,8 @@ class FeedViewModel @Inject constructor(
      * 사용자의 리프레시 액션 처리(Intent)
      */
     fun onRefresh() {
-        fetchFeeds()
+        val currentFilter = (_uiState.value as? FeedUiState.Success)?.selectedFilter ?: FeedFilter.ALL
+        fetchFeeds(currentFilter)
     }
 
     /**
@@ -100,12 +103,16 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 필터 탭 클릭 시 처리 (Intent)
+     */
     fun onFilterClick(filter: FeedFilter) {
-        val currentState = _uiState.value
-        if (currentState is FeedUiState.Success) {
-            _uiState.value = currentState.copy(selectedFilter = filter)
-            //TODO 서버 개발 완료 시 여기서 filter에 따른 데이터 로드 호출
-        }
+        val currentState = _uiState.value as? FeedUiState.Success ?: return
+
+        // 같은 필터를 다시 클릭한 경우 무시
+        if (currentState.selectedFilter == filter) return
+
+        fetchFeeds(filter)
     }
 
     /**

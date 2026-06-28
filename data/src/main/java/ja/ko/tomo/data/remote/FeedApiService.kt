@@ -8,6 +8,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * 피드 관련 API 통신을 담당하는 Retrofit 서비스 인터페이스 (ADDED)
@@ -24,9 +25,12 @@ interface FeedApiService {
 
     /**
      * 전체 피드 목록 최신순 조회
+     * @param filter "all" 또는 "following"
      */
     @GET("feeds")
-    suspend fun getFeeds(): ApiResponse<List<FeedResponseDto>>
+    suspend fun getFeeds(
+        @Query("filter") filter: String
+    ): ApiResponse<List<FeedResponseDto>>
 
     /**
      * 특정 피드 상세 정보 조회

@@ -8,6 +8,7 @@ import ja.ko.tomo.data.remote.FeedApiService
 import ja.ko.tomo.domain.feed.model.Feed
 import ja.ko.tomo.domain.feed.model.FeedResult
 import ja.ko.tomo.domain.feed.repository.FeedRepository
+import ja.ko.tomo.domain.model.FeedFilter
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import javax.inject.Inject
@@ -16,9 +17,9 @@ class FeedRepositoryImpl @Inject constructor(
     private val feedApiService: FeedApiService,
     private val sessionManager: SessionManager
 ) : FeedRepository {
-    override suspend fun getFeeds(): FeedResult {
+    override suspend fun getFeeds(filter: FeedFilter): FeedResult {
         return try {
-            val response = feedApiService.getFeeds()
+            val response = feedApiService.getFeeds(filter.name.lowercase())
 
             if (response.success && response.data != null) {
                 val feeds = response.data.map { it.mapToDomain() }

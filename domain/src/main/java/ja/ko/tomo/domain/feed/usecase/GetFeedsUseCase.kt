@@ -2,6 +2,7 @@ package ja.ko.tomo.domain.feed.usecase
 
 import ja.ko.tomo.domain.feed.model.FeedResult
 import ja.ko.tomo.domain.feed.repository.FeedRepository
+import ja.ko.tomo.domain.model.FeedFilter
 import javax.inject.Inject
 
 /**
@@ -10,5 +11,5 @@ import javax.inject.Inject
 class GetFeedsUseCase @Inject constructor(
     private val repo: FeedRepository
 ) {
-    suspend operator fun invoke(): FeedResult = repo.getFeeds()
+    suspend operator fun invoke(filter: FeedFilter): FeedResult = repo.getFeeds(filter)
 }
